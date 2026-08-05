@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interativo de Fórmulas - Física Mackenzie</title>
+    <!-- Carregando MathLive para o input e visualização de equações -->
+    <script defer src="https://unpkg.com/mathlive"></script>
+    <style>
+        :root {
+            --primary: #d32f2f;
+            --primary-light: #ff6659;
+            --primary-dark: #9a0007;
+            --secondary: #1976d2;
+            --bg-color: #f5f7fa;
+            --surface: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --success: #2e7d32;
+            --error: #c62828;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
+        .container { background-color: var(--surface); max-width: 800px; width: 100%; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); padding: 40px; position: relative; overflow: hidden; }
+        h1 { color: var(--primary-dark); text-align: center; margin-top: 0; border-bottom: 2px solid var(--primary-light); padding-bottom: 10px; }
+        p { line-height: 1.6; }
+        .view-section { display: none; animation: fadeIn 0.4s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Setup */
+        .setup-container { text-align: center; padding: 40px 0; }
+        .input-group { margin: 20px 0; }
+        input[type="number"] { padding: 10px; font-size: 1.1rem; width: 80px; border: 2px solid #ccc; border-radius: 6px; text-align: center; }
+        button { background-color: var(--primary); color: white; border: none; padding: 12px 24px; font-size: 1.1rem; border-radius: 6px; cursor: pointer; transition: background 0.3s; font-weight: bold; }
+        button:hover { background-color: var(--primary-dark); }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        /* Quiz */
+        .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: bold; color: var(--secondary); }
+        .context-box { background-color: #e3f2fd; padding: 20px; border-left: 5px solid var(--secondary); border-radius: 4px; margin-bottom: 20px; font-style: italic; }
+        .item-container { margin-bottom: 30px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; }
+        .item-title { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .vars-grid { display: flex; flex-direction: column; gap: 10px; }
+        .var-input { padding: 10px; font-size: 1rem; border: 2px solid #ccc; border-radius: 4px; width: 100%; max-width: 400px; transition: all 0.3s ease; }
+        .var-input:focus { outline: none; border-color: var(--secondary); }
+        .var-input.correct { border-color: var(--success); background-color: #e8f5e9; color: var(--success); font-weight: bold; }
+        .var-input.incorrect { border-color: var(--error); background-color: #ffebee; color: var(--error); }
+
+        math-field { font-size: 1.5rem; padding: 10px; border: 2px solid #ccc; border-radius: 4px; width: 100%; max-width: 400px; background: #fff; transition: all 0.3s ease; }
+        math-field.correct { border-color: var(--success) !important; background-color: #e8f5e9 !important; }
+        math-field.incorrect { border-color: var(--error) !important; background-color: #ffebee !important; }
+        math-field.static-math { border: none !important; background: transparent !important; padding: 0; font-size: 1.3rem; pointer-events: none; }
+
+        .feedback { margin-top: 15px; padding: 10px; border-radius: 4px; display: none; font-weight: bold; }
+        .feedback.correct { display: block; background-color: #e8f5e9; color: var(--success); border-left: 4px solid var(--success); }
+        .feedback.incorrect { display: block; background-color: #ffebee; color: var(--error); border-left: 4px solid var(--error); }
+
+        .actions { display: flex; justify-content: flex-end; margin-top: 20px; gap: 15px; flex-wrap: wrap; }
+        .btn-check { background-color: var(--secondary); }
+        .btn-check:hover { background-color: #115293; }
+
+        /* Summary */
+        .summary-list { list-style: none; padding: 0; }
+        .summary-item { background: #f9f9f9; margin-bottom: 15px; padding: 15px; border-radius: 8px; border-left: 5px solid var(--primary); }
+        .summary-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; }
+        .summary-formula { margin-top: 10px; color: var(--secondary); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Física Mackenzie - Treino Intuitivo (Completo)</h1>
+
+    <div id="setup-view" class="view-section active">
+        <div class="setup-container">
+            <p>Este quiz ajudará você a memorizar todas as principais fórmulas de física do vestibular de forma intuitiva, relacionando-as aos seus fenômenos e grandezas.</p>
+            <div class="input-group">
+                <label for="num-questions">Quantas fórmulas deseja revisar agora? (1 a 34)</label><br><br>
+                <input type="number" id="num-questions" min="1" max="34" value="5">
+            </div>
+            <button onclick="startQuiz()">Começar a Responder</button>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="view-section">
+        <div class="question-header">
+            <span id="q-counter">Questão 1</span>
+            <span id="q-category">Categoria</span>
+        </div>
+
+        <div class="context-box" id="q-context"></div>
+
+        <div class="item-container">
+            <div class="item-title" id="q-vars-prompt">Do que depende essa grandeza?</div>
+            <div class="vars-grid" id="vars-inputs-container"></div>
+            <div id="vars-feedback" class="feedback"></div>
+            <div class="actions">
+                <button class="btn-check" id="btn-check-vars" onclick="checkVars()">Verificar Variáveis</button>
+            </div>
+        </div>
+
+        <div class="item-container" id="formula-section" style="display: none;">
+            <div class="item-title">Escreva a equação que descreve essa relação:</div>
+            <p style="font-size: 0.9em; color: #666;">Dica: Digite letras e operadores no campo abaixo. Ele formata a matemática para você.</p>
+            <math-field id="formula-input"></math-field>
+            <div id="formula-feedback" class="feedback"></div>
+            <div class="actions">
+                <button class="btn-check" id="btn-check-formula" onclick="checkFormula()">Verificar Fórmula</button>
+                <button id="btn-next" style="display: none;" onclick="nextQuestion()">Próxima Questão</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-view" class="view-section">
+        <h2>Revisão Concluída! 🎉</h2>
+        <p>Aqui está o resumo das fórmulas que você revisou hoje:</p>
+        <ul class="summary-list" id="summary-container"></ul>
+        <div class="actions" style="justify-content: center; margin-top: 30px;">
+            <button onclick="location.reload()">Fazer Novo Treino</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Banco Completo Injetado do Python
+    const questionDatabase = [{"category": "MRU e MRUV", "title": "Deslocamento (MRU)", "context": "Em um movimento sem aceleração, a distância percorrida aumenta uniformemente com o passar do tempo.", "varsPrompt": "A variação de espaço (Δs) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["velocidade", "v"]}, {"id": "var_1", "synonyms": ["tempo", "variacao de tempo", "delta t", "t"]}], "validFormulas": ["\\Deltas=v\\cdot\\Deltat", "\\Deltas=v\\Deltat", "\\Deltas=v\\cdot t", "s=vt"], "displayFormula": "\\Delta s = v \\cdot \\Delta t"}, {"category": "MRU e MRUV", "title": "Aceleração Média", "context": "Quando você pisa no acelerador ou no freio, a velocidade do carro muda ao longo do tempo.", "varsPrompt": "A aceleração (a) mede a rapidez dessa mudança. De quais grandezas ela depende?", "vars": [{"id": "var_0", "synonyms": ["variacao de velocidade", "velocidade", "delta v", "v"]}, {"id": "var_1", "synonyms": ["tempo", "variacao de tempo", "delta t", "t"]}], "validFormulas": ["a=\\frac{\\Deltav}{\\Deltat}", "a=\\Deltav/\\Deltat"], "displayFormula": "a = \\frac{\\Delta v}{\\Delta t}"}, {"category": "MRU e MRUV", "title": "Função Horária da Velocidade", "context": "Um objeto já possui uma velocidade inicial e começa a acelerar. Sua velocidade futura dependerá do tempo que ele passa acelerando.", "varsPrompt": "A velocidade final (v) em um MRUV depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["velocidade inicial", "v0"]}, {"id": "var_1", "synonyms": ["aceleracao", "a"]}, {"id": "var_2", "synonyms": ["tempo", "t"]}], "validFormulas": ["v=v_0+a\\cdott", "v=v_0+at", "v=v0+at"], "displayFormula": "v = v_0 + a \\cdot t"}, {"category": "MRU e MRUV", "title": "Equação de Torricelli", "context": "Às vezes não sabemos o tempo que um movimento durou, mas sabemos a distância percorrida enquanto o objeto freava ou acelerava.", "varsPrompt": "O quadrado da velocidade final (v²) depende de quais grandezas (sem usar o tempo)?", "vars": [{"id": "var_0", "synonyms": ["velocidade inicial", "v0"]}, {"id": "var_1", "synonyms": ["aceleracao", "a"]}, {"id": "var_2", "synonyms": ["deslocamento", "distancia", "delta s"]}], "validFormulas": ["v^2=v_0^2+2a\\Deltas", "v^2=v_0^2+2\\cdota\\cdot\\Deltas", "v^2=v0^2+2a\\Deltas"], "displayFormula": "v^2 = v_0^2 + 2 \\cdot a \\cdot \\Delta s"}, {"category": "MRU e MRUV", "title": "Função Horária da Posição", "context": "Para prever a posição exata de um corpo acelerado, precisamos considerar de onde ele saiu, sua velocidade original e sua aceleração.", "varsPrompt": "A posição final (s) no MRUV depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["posicao inicial", "s0"]}, {"id": "var_1", "synonyms": ["velocidade inicial", "v0"]}, {"id": "var_2", "synonyms": ["tempo", "t"]}, {"id": "var_3", "synonyms": ["aceleracao", "a"]}], "validFormulas": ["s=s_0+v_0t+\\frac{at^2}{2}", "s=s_0+v_0\\cdott+\\frac{a\\cdott^2}{2}"], "displayFormula": "s = s_0 + v_0 \\cdot t + \\frac{a \\cdot t^2}{2}"}, {"category": "Gases", "title": "Equação de Clapeyron", "context": "O estado de um gás ideal confinado relaciona suas principais propriedades macroscópicas e a quantidade de partículas.", "varsPrompt": "Para um gás ideal, o produto da Pressão (P) pelo Volume (V) depende de quais grandezas (ignorando a constante R)?", "vars": [{"id": "var_0", "synonyms": ["numero de mols", "mols", "n"]}, {"id": "var_1", "synonyms": ["temperatura", "t"]}], "validFormulas": ["PV=nRT", "P\\cdotV=n\\cdotR\\cdotT"], "displayFormula": "P \\cdot V = n \\cdot R \\cdot T"}, {"category": "Gases", "title": "Energia Interna (Gás Monoatômico)", "context": "As moléculas de um gás estão em constante agitação. A energia total desse movimento interno pode ser calculada.", "varsPrompt": "A energia interna (U) de um gás ideal monoatômico depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["numero de mols", "n"]}, {"id": "var_1", "synonyms": ["temperatura", "t"]}], "validFormulas": ["U=\\frac{3}{2}nRT", "U=\\frac{3}{2}\\cdotn\\cdotR\\cdotT"], "displayFormula": "U_{mono} = \\frac{3}{2} \\cdot n \\cdot R \\cdot T"}, {"category": "Gases", "title": "Trabalho de um Gás", "context": "Quando um gás se expande, ele empurra as paredes do recipiente (como um êmbolo), realizando trabalho (W) sobre o meio.", "varsPrompt": "O Trabalho (W) realizado por um gás a pressão constante depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["pressao", "p"]}, {"id": "var_1", "synonyms": ["variacao de volume", "delta v", "volume"]}], "validFormulas": ["W=P\\cdot\\DeltaV", "W=P\\DeltaV"], "displayFormula": "W = P \\cdot \\Delta V"}, {"category": "Gases", "title": "1ª Lei da Termodinâmica", "context": "O calor (Q) que um sistema recebe pode ser usado para aquecer o gás (aumentar a energia interna) ou para o gás realizar trabalho expandindo-se.", "varsPrompt": "A quantidade de Calor (Q) trocada se divide em quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["variacao da energia interna", "delta u"]}, {"id": "var_1", "synonyms": ["trabalho", "w"]}], "validFormulas": ["Q=\\DeltaU+W", "Q=W+\\DeltaU"], "displayFormula": "Q = \\Delta U + W"}, {"category": "Termodinâmica", "title": "Calor Sensível", "context": "Para esquentar a água do café, você fornece energia. A quantidade de calor depende do quanto de água tem e do quanto você quer esquentar.", "varsPrompt": "A quantidade de calor sensível (Q) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["calor especifico", "c"]}, {"id": "var_2", "synonyms": ["variacao de temperatura", "delta theta", "delta t"]}], "validFormulas": ["Q=mc\\Delta\\theta", "Q=m\\cdotc\\cdot\\Delta\\theta", "Q=mc\\DeltaT"], "displayFormula": "Q = m \\cdot c \\cdot \\Delta \\theta"}, {"category": "Termodinâmica", "title": "Calor Latente", "context": "Quando um cubo de gelo está derretendo, ele absorve calor sem mudar sua temperatura. A energia é gasta apenas para quebrar as ligações de estado físico.", "varsPrompt": "O calor latente de mudança de fase (Q) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["calor latente", "l", "constante latente"]}], "validFormulas": ["Q=mL", "Q=m\\cdotL"], "displayFormula": "Q = m \\cdot L"}, {"category": "Circuitos", "title": "1ª Lei de Ohm", "context": "A corrente que passa por um fio depende do quão 'forte' é a tensão aplicada e do quanto o fio 'resiste' à passagem.", "varsPrompt": "A Tensão ou DDP (U) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["resistencia", "r"]}, {"id": "var_1", "synonyms": ["corrente", "i"]}], "validFormulas": ["U=R\\cdoti", "U=Ri", "V=Ri"], "displayFormula": "U = R \\cdot i"}, {"category": "Circuitos", "title": "Potência Elétrica", "context": "O brilho de uma lâmpada indica o quão rápido ela converte energia elétrica em luz e calor.", "varsPrompt": "A Potência (P) dissipada por um equipamento elétrico depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["corrente", "i"]}, {"id": "var_1", "synonyms": ["tensao", "ddp", "u"]}], "validFormulas": ["P=i\\cdotU", "P=iU", "P=U\\cdoti"], "displayFormula": "P = i \\cdot U"}, {"category": "Circuitos", "title": "Energia Elétrica", "context": "A conta de luz é cobrada com base na potência dos seus aparelhos e do tempo que eles ficam ligados.", "varsPrompt": "A Energia Elétrica (E) consumida depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["potencia", "p"]}, {"id": "var_1", "synonyms": ["tempo", "delta t", "t"]}], "validFormulas": ["E=P\\cdot\\Deltat", "E=P\\Deltat", "E=Pt"], "displayFormula": "E = P \\cdot \\Delta t"}, {"category": "Circuitos", "title": "Resistores em Série", "context": "Quando você coloca obstáculos (resistores) um após o outro no mesmo caminho, a dificuldade total para a corrente aumenta somando-se.", "varsPrompt": "A Resistência Equivalente (Req) em série depende das resistências individuais. Qual a relação matemática simples? (Escreva a soma de R1 e R2)", "vars": [{"id": "var_0", "synonyms": ["resistencia 1", "r1"]}, {"id": "var_1", "synonyms": ["resistencia 2", "r2"]}], "validFormulas": ["R_{eq}=R_1+R_2", "R=R_1+R_2"], "displayFormula": "R_{eq} = R_1 + R_2 + ..."}, {"category": "Circuitos", "title": "Resistores em Paralelo", "context": "Ao abrir vários caminhos simultâneos (paralelo) para a corrente, a dificuldade total (resistência equivalente) diminui.", "varsPrompt": "O inverso da Resistência Equivalente (1/Req) é a soma dos inversos. De quais resistências depende? (Considere 2 caminhos, R1 e R2)", "vars": [{"id": "var_0", "synonyms": ["resistencia 1", "r1"]}, {"id": "var_1", "synonyms": ["resistencia 2", "r2"]}], "validFormulas": ["\\frac{1}{R_{eq}}=\\frac{1}{R_1}+\\frac{1}{R_2}", "1/R_{eq}=1/R_1+1/R_2"], "displayFormula": "\\frac{1}{R_{eq}} = \\frac{1}{R_1} + \\frac{1}{R_2} + ..."}, {"category": "Ondulatória", "title": "Equação Fundamental da Onda", "context": "A velocidade com que uma onda avança no mar depende da distância entre duas cristas (comprimento) e de quantas cristas passam por segundo (frequência).", "varsPrompt": "A velocidade de propagação (v) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["comprimento de onda", "lambda"]}, {"id": "var_1", "synonyms": ["frequencia", "f"]}], "validFormulas": ["v=\\lambda\\cdotf", "v=\\lambdaf"], "displayFormula": "v = \\lambda \\cdot f"}, {"category": "Energia", "title": "Energia Cinética", "context": "O potencial de dano de um objeto em movimento cresce muito com sua velocidade e sua massa.", "varsPrompt": "A Energia Cinética (Ec) de um corpo depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["velocidade", "v"]}], "validFormulas": ["E_c=\\frac{mv^2}{2}", "E_c=\\frac{m\\cdotv^2}{2}"], "displayFormula": "E_c = \\frac{m \\cdot v^2}{2}"}, {"category": "Energia", "title": "Energia Potencial Gravitacional", "context": "Ao levantar um peso, você armazena energia nele. Quanto mais alto e mais pesado, mais energia é acumulada.", "varsPrompt": "A Energia Potencial Gravitacional (Epg) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["gravidade", "g"]}, {"id": "var_2", "synonyms": ["altura", "h"]}], "validFormulas": ["E_{pg}=mgh", "E_{pg}=m\\cdotg\\cdoth"], "displayFormula": "E_{pg} = m \\cdot g \\cdot h"}, {"category": "Energia", "title": "Energia Potencial Elástica", "context": "Ao esticar um estilingue ou amassar uma mola, energia é guardada na deformação.", "varsPrompt": "A Energia Potencial Elástica (Eel) armazenada em uma mola depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["constante elastica", "k"]}, {"id": "var_1", "synonyms": ["deformacao", "x"]}], "validFormulas": ["E_{el}=\\frac{kx^2}{2}", "E_{el}=\\frac{k\\cdotx^2}{2}"], "displayFormula": "E_{el} = \\frac{k \\cdot x^2}{2}"}, {"category": "Dinâmica / Forças", "title": "Força Peso", "context": "A força que a Terra exerce puxando você para o chão é constante e depende da sua constituição e da gravidade local.", "varsPrompt": "O Peso (P) de um corpo depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["gravidade", "g", "aceleracao da gravidade"]}], "validFormulas": ["P=mg", "P=m\\cdotg"], "displayFormula": "P = m \\cdot g"}, {"category": "Dinâmica / Forças", "title": "Força de Atrito", "context": "É mais difícil empurrar um móvel pesado no carpete do que no piso liso. O atrito depende do contato entre as superfícies.", "varsPrompt": "A Força de Atrito (Fat) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["coeficiente de atrito", "mi", "rugosidade"]}, {"id": "var_1", "synonyms": ["forca normal", "normal", "n"]}], "validFormulas": ["F_{at}=\\mu\\cdotN", "F_{at}=\\muN", "Fat=\\muN"], "displayFormula": "F_{at} = \\mu \\cdot N"}, {"category": "Dinâmica / Forças", "title": "Lei de Hooke (Força Elástica)", "context": "Quanto mais você tenta esticar uma mola resistente, mais força ela faz puxando de volta.", "varsPrompt": "A Força Elástica (Fel) feita pela mola depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["constante elastica", "k"]}, {"id": "var_1", "synonyms": ["deformacao", "x"]}], "validFormulas": ["F_{el}=kx", "F_{el}=k\\cdotx"], "displayFormula": "F_{el} = k \\cdot x"}, {"category": "Dinâmica / Forças", "title": "2ª Lei de Newton", "context": "Para fazer um corpo acelerar, você precisa aplicar uma força resultante. Quanto mais massivo, mais força é necessária.", "varsPrompt": "A Força Resultante (Fr) sobre um corpo depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["aceleracao", "a"]}], "validFormulas": ["F_r=ma", "F_r=m\\cdota", "F=ma"], "displayFormula": "F_r = m \\cdot a"}, {"category": "Movimento Circular", "title": "Velocidade Linear no MCU", "context": "Na borda de um disco giratório, a velocidade linear depende do quão rápido o disco gira e do quão distante você está do centro.", "varsPrompt": "A velocidade escalar ou linear (v) em um MCU depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["velocidade angular", "omega", "w"]}, {"id": "var_1", "synonyms": ["raio", "r"]}], "validFormulas": ["v=\\omegaR", "v=\\omega\\cdotR"], "displayFormula": "v = \\omega \\cdot R"}, {"category": "Movimento Circular", "title": "Velocidade Angular e Período", "context": "A velocidade com que um ângulo é percorrido (uma volta inteira é 2π radianos) depende do tempo gasto para dar essa volta (Período).", "varsPrompt": "A velocidade angular (ω) depende do período (T). Qual a fórmula que as relaciona?", "vars": [{"id": "var_0", "synonyms": ["periodo", "t", "tempo"]}], "validFormulas": ["\\omega=\\frac{2\\pi}{T}", "w=\\frac{2\\pi}{T}"], "displayFormula": "\\omega = \\frac{2 \\cdot \\pi}{T}"}, {"category": "Movimento Circular", "title": "Frequência e Período", "context": "Frequência é o número de voltas por segundo, e Período é o tempo de uma volta. Eles são o inverso um do outro.", "varsPrompt": "A frequência (f) de um movimento cíclico depende do Período (T). Qual a relação?", "vars": [{"id": "var_0", "synonyms": ["periodo", "t"]}], "validFormulas": ["f=\\frac{1}{T}", "f=1/T"], "displayFormula": "f = \\frac{1}{T}"}, {"category": "Movimento Circular", "title": "Aceleração Centrípeta", "context": "Para fazer uma curva, deve haver uma força puxando para o centro. A aceleração associada a essa mudança de direção depende da velocidade e do quão fechada é a curva.", "varsPrompt": "A Aceleração Centrípeta (ac) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["velocidade", "v"]}, {"id": "var_1", "synonyms": ["raio", "r"]}], "validFormulas": ["a_c=\\frac{v^2}{R}", "ac=\\frac{v^2}{R}"], "displayFormula": "a_c = \\frac{v^2}{R}"}, {"category": "Eletrostática", "title": "Lei de Coulomb", "context": "Cargas iguais se repelem, cargas opostas se atraem. A intensidade do 'puxão' ou 'empurrão' diminui com o quadrado da distância.", "varsPrompt": "A Força Elétrica (Fel) entre duas partículas depende de quais grandezas (além da constante k)?", "vars": [{"id": "var_0", "synonyms": ["carga 1", "q1"]}, {"id": "var_1", "synonyms": ["carga 2", "q2"]}, {"id": "var_2", "synonyms": ["distancia", "d"]}], "validFormulas": ["F_{el}=\\frac{k\\cdotq_1\\cdotq_2}{d^2}", "F=\\frac{kq_1q_2}{d^2}"], "displayFormula": "F_{el} = \\frac{k \\cdot q_1 \\cdot q_2}{d^2}"}, {"category": "Eletrostática", "title": "Potencial Elétrico", "context": "Ao redor de uma carga, existe um 'relevo' elétrico. O nível desse relevo (potencial) diminui conforme você se afasta da carga central.", "varsPrompt": "O Potencial Elétrico (V) gerado por uma partícula depende de quais grandezas (além da constante k)?", "vars": [{"id": "var_0", "synonyms": ["carga geradora", "q"]}, {"id": "var_1", "synonyms": ["distancia", "d"]}], "validFormulas": ["V=\\frac{kq}{d}", "V=\\frac{k\\cdotq}{d}"], "displayFormula": "V = \\frac{k \\cdot q}{d}"}, {"category": "Eletromagnetismo", "title": "Força Magnética", "context": "Uma carga se movendo cortando um campo magnético sofre um desvio em sua rota. Parada, ela não sente nada.", "varsPrompt": "A Força Magnética (Fmag) máxima sobre uma carga depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["carga", "q"]}, {"id": "var_1", "synonyms": ["velocidade", "v"]}, {"id": "var_2", "synonyms": ["campo magnetico", "b"]}], "validFormulas": ["F_{mag}=qvB", "F_{mag}=q\\cdotv\\cdotB"], "displayFormula": "F_{mag} = q \\cdot v \\cdot B"}, {"category": "Eletromagnetismo", "title": "Raio da Trajetória no Campo Magnético", "context": "Quando a força magnética faz a carga girar, a partícula entra em um movimento circular uniforme. O tamanho dessa curva varia.", "varsPrompt": "O Raio (R) da trajetória circular de uma carga em um campo magnético uniforme depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["velocidade", "v"]}, {"id": "var_2", "synonyms": ["carga", "q"]}, {"id": "var_3", "synonyms": ["campo magnetico", "b"]}], "validFormulas": ["R=\\frac{mv}{qB}", "R=\\frac{m\\cdotv}{q\\cdotB}"], "displayFormula": "R = \\frac{m \\cdot v}{q \\cdot B}"}, {"category": "Eletromagnetismo", "title": "Fluxo Magnético", "context": "Imagine as linhas do campo magnético como chuva caindo através de uma janela. O quanto de 'chuva' passa depende da intensidade da chuva, da área da janela e do ângulo dela.", "varsPrompt": "O Fluxo Magnético (Φ) através de uma superfície plana depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["campo magnetico", "b"]}, {"id": "var_1", "synonyms": ["area", "a"]}, {"id": "var_2", "synonyms": ["angulo", "alfa", "cos alfa", "cos"]}], "validFormulas": ["\\phi=B\\cdotA\\cdot\\cos\\alpha", "\\phi=BA\\cos\\alpha", "\\Phi=BA\\cos\\alpha"], "displayFormula": "\\phi = B \\cdot A \\cdot \\cos\\alpha"}, {"category": "Eletromagnetismo", "title": "Lei de Faraday-Lenz", "context": "O princípio por trás dos geradores de energia. Variar a quantidade de 'linhas de campo' que atravessam uma bobina ao longo do tempo cria uma tensão induzida.", "varsPrompt": "A Força Eletromotriz Induzida (ε) depende da variação de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["fluxo magnetico", "variacao do fluxo", "delta phi", "phi"]}, {"id": "var_1", "synonyms": ["tempo", "variacao de tempo", "delta t", "t"]}], "validFormulas": ["\\varepsilon=-\\frac{\\Delta\\phi}{\\Deltat}", "E=-\\frac{\\Delta\\Phi}{\\Deltat}", "\\varepsilon=-\\Delta\\phi/\\Deltat"], "displayFormula": "\\varepsilon = -\\frac{\\Delta \\phi}{\\Delta t}"}];
+
+    let quizQueue = [];
+    let currentIndex = 0;
+    
+    function removeAccents(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    }
+
+    function normalizeLatex(latex) {
+        let clean = latex.replace(/\\cdot/g, '')
+                         .replace(/\\times/g, '')
+                         .replace(/\\left/g, '')
+                         .replace(/\\right/g, '')
+                         .replace(/ /g, '');
+        return clean;
+    }
+
+    function startQuiz() {
+        const numInput = document.getElementById('num-questions').value;
+        let num = parseInt(numInput);
+        if (isNaN(num) || num < 1) num = 1;
+        if (num > questionDatabase.length) num = questionDatabase.length;
+
+        let shuffled = [...questionDatabase].sort(() => 0.5 - Math.random());
+        quizQueue = shuffled.slice(0, num);
+        
+        currentIndex = 0;
+        
+        document.getElementById('setup-view').classList.remove('active');
+        document.getElementById('quiz-view').classList.add('active');
+        
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const q = quizQueue[currentIndex];
+        
+        document.getElementById('q-counter').innerText = `Questão ${currentIndex + 1} de ${quizQueue.length}`;
+        document.getElementById('q-category').innerText = q.category;
+        document.getElementById('q-context').innerText = q.context;
+        document.getElementById('q-vars-prompt').innerText = q.varsPrompt;
+        
+        document.getElementById('formula-section').style.display = 'none';
+        document.getElementById('vars-feedback').style.display = 'none';
+        document.getElementById('formula-feedback').style.display = 'none';
+        document.getElementById('btn-next').style.display = 'none';
+        
+        const mathField = document.getElementById('formula-input');
+        if(mathField) {
+            mathField.setValue('');
+            mathField.classList.remove('correct', 'incorrect');
+            mathField.oninput = function() {
+                this.classList.remove('correct', 'incorrect');
+            };
+        }
+
+        const varsContainer = document.getElementById('vars-inputs-container');
+        varsContainer.innerHTML = '';
+        
+        for (let i = 0; i < q.vars.length; i++) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'var-input';
+            input.placeholder = `Grandeza ${i + 1}`;
+            input.id = `var-input-${i}`;
+            input.addEventListener('input', function() {
+                this.classList.remove('correct', 'incorrect');
+            });
+            varsContainer.appendChild(input);
+        }
+    }
+
+    function checkVars() {
+        const q = quizQueue[currentIndex];
+        let usedIndexes = new Set();
+        let correctCount = 0;
+
+        for (let i = 0; i < q.vars.length; i++) {
+            const inputEl = document.getElementById(`var-input-${i}`);
+            inputEl.classList.remove('correct', 'incorrect');
+            
+            const userVal = removeAccents(inputEl.value);
+            let matched = false;
+
+            if(userVal === "") {
+                inputEl.classList.add('incorrect');
+                continue;
+            }
+
+            for (let j = 0; j < q.vars.length; j++) {
+                if (usedIndexes.has(j)) continue; 
+                
+                const expectedSynonyms = q.vars[j].synonyms.map(removeAccents);
+                if (expectedSynonyms.includes(userVal)) {
+                    matched = true;
+                    usedIndexes.add(j);
+                    correctCount++;
+                    break;
+                }
+            }
+
+            if (matched) {
+                inputEl.classList.add('correct');
+            } else {
+                inputEl.classList.add('incorrect');
+            }
+        }
+
+        const fb = document.getElementById('vars-feedback');
+        if (correctCount === q.vars.length) {
+            fb.innerText = "Correto! Você identificou todas as grandezas.";
+            fb.className = "feedback correct";
+            document.getElementById('formula-section').style.display = 'block';
+            document.getElementById('formula-section').style.animation = 'fadeIn 0.5s ease';
+        } else {
+            fb.innerText = "Algumas grandezas estão incorretas ou faltando. Corrija os campos em vermelho e tente novamente!";
+            fb.className = "feedback incorrect";
+        }
+    }
+
+    function checkFormula() {
+        const q = quizQueue[currentIndex];
+        const mathField = document.getElementById('formula-input');
+        const userLatex = mathField.getValue('latex-expanded');
+        
+        const normalizedUser = normalizeLatex(userLatex);
+        let isCorrect = false;
+
+        for (let valid of q.validFormulas) {
+            if (normalizedUser === normalizeLatex(valid)) {
+                isCorrect = true;
+                break;
+            }
+        }
+
+        const fb = document.getElementById('formula-feedback');
+        if (isCorrect) {
+            fb.innerHTML = `Correto! A fórmula é: <br><br> <math-field readonly class="static-math">${q.displayFormula}</math-field>`;
+            fb.className = "feedback correct";
+            mathField.classList.add('correct');
+            mathField.classList.remove('incorrect');
+            document.getElementById('btn-next').style.display = 'inline-block';
+        } else {
+            fb.innerHTML = `Ops! Verifique sua resposta. <br> A representação padrão é: <br><br> <math-field readonly class="static-math">${q.displayFormula}</math-field> <br><br><i>(Se a sua for matematicamente equivalente, considere como certa e avance!)</i>`;
+            fb.className = "feedback incorrect";
+            mathField.classList.add('incorrect');
+            mathField.classList.remove('correct');
+            document.getElementById('btn-next').style.display = 'inline-block';
+        }
+    }
+
+    function nextQuestion() {
+        currentIndex++;
+        if (currentIndex < quizQueue.length) {
+            loadQuestion();
+        } else {
+            showSummary();
+        }
+    }
+
+    function showSummary() {
+        document.getElementById('quiz-view').classList.remove('active');
+        document.getElementById('result-view').classList.add('active');
+        
+        const container = document.getElementById('summary-container');
+        container.innerHTML = '';
+        
+        quizQueue.forEach(q => {
+            const li = document.createElement('li');
+            li.className = 'summary-item';
+            
+            const grandezas = q.vars.map(v => v.synonyms[0]).join(', ');
+            
+            li.innerHTML = `
+                <div class="summary-title">${q.category} - ${q.title}</div>
+                <div style="margin-bottom: 8px;"><b>Grandezas:</b> ${grandezas}</div>
+                <div class="summary-formula">
+                    <math-field readonly class="static-math">${q.displayFormula}</math-field>
+                </div>
+            `;
+            container.appendChild(li);
+        });
+    }
+</script>
+</body>
+</html>

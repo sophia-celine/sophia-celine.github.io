@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Function Explorer</title>
+    <!-- Load Plotly for graphing -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg: #F9FAFB;
+            --surface: #FFFFFF;
+            --text: #111827;
+            --text-light: #6B7280;
+            --border: #E5E7EB;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        /* Tabs Setup */
+        .tabs {
+            display: flex;
+            background-color: #f3f4f6;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .tab-button:hover {
+            background-color: #e5e7eb;
+            color: var(--text);
+        }
+        .tab-button.active {
+            background-color: var(--surface);
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            grid-template-columns: minmax(280px, 350px) minmax(0, 1fr);
+            gap: 20px;
+            width: 100%;
+            min-width: 0;
+        }
+        .tab-content.active {
+            display: grid;
+        }
+        /* Sidebar Controls */
+        .controls {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            min-width: 0;
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .control-group input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .properties-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eef2ff;
+            border-radius: 6px;
+            border: 1px solid #c7d2fe;
+        }
+        .properties-box p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .calculator {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed var(--border);
+        }
+        .calc-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .calc-inputs div {
+            flex: 1;
+            min-width: 0;
+        }
+        .calc-inputs div:nth-child(2) {
+            flex: 0 0 auto;
+            text-align: center;
+        }
+        .calc-inputs input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box; 
+        }
+        
+        /* Graph Layout Elements */
+        .graph-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            min-width: 0; /* Prevents flexbox overflow */
+        }
+        .dynamic-eq {
+            text-align: center;
+            color: var(--text);
+            margin: 0 0 15px 0;
+            font-size: 24px;
+            font-weight: 600;
+            padding: 10px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .graph-container {
+            width: 100%;
+            height: 550px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        hr { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            .container {
+                max-width: 100%;
+            }
+            .tab-content.active {
+                grid-template-columns: 1fr;
+                padding: 12px;
+            }
+            .calc-inputs {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .calc-inputs div:nth-child(2) {
+                margin: 8px 0;
+            }
+            .graph-container {
+                height: 360px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Interactive Function Explorer</h1>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('linear', event)">Linear</button>
+            <button class="tab-button" onclick="switchTab('quadratic', event)">Quadratic</button>
+            <button class="tab-button" onclick="switchTab('exponential', event)">Exponential</button>
+            <button class="tab-button" onclick="switchTab('logarithmic', event)">Logarithmic</button>
+            <button class="tab-button" onclick="switchTab('modular', event)">Modulus (Abs Value)</button>
+        </div>
+
+        <!-- LINEAR TAB -->
+        <div id="linear" class="tab-content active">
+            <div class="controls">
+                <h2>f(x) = ax + b</h2>
+                <div class="control-group">
+                    <label>Slope (a):</label>
+                    <input type="number" id="lin-a" value="2" step="0.5" oninput="updateLinear()">
+                </div>
+                <div class="control-group">
+                    <label>Y-Intercept (b):</label>
+                    <input type="number" id="lin-b" value="-4" step="0.5" oninput="updateLinear()">
+                </div>
+
+                <div class="properties-box" id="lin-props">
+                    <strong>Key Features:</strong>
+                    <p id="lin-y-int">Y-Intercept: (0, -4)</p>
+                    <p id="lin-x-int">X-Intercept (Root): (2, 0)</p>
+                </div>
+
+                <div class="calculator">
+                    <strong>Point Finder</strong>
+                    <p style="font-size: 13px; color: #666;">Enter X to find Y, or enter Y to find X.</p>
+                    <div class="calc-inputs">
+                        <div>
+                            <label>X = </label>
+                            <input type="number" id="lin-calc-x" value="5" oninput="calcLinearY()">
+                        </div>
+                        <div>↔</div>
+                        <div>
+                            <label>Y = </label>
+                            <input type="number" id="lin-calc-y" value="6" oninput="calcLinearX()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="graph-wrapper">
+                <div id="lin-eq" class="dynamic-eq"></div>
+                <div id="graph-linear" class="graph-container"></div>
+            </div>
+        </div>
+
+        <!-- QUADRATIC TAB -->
+        <div id="quadratic" class="tab-content">
+            <div class="controls">
+                <h2>f(x) = ax² + bx + c</h2>
+                <div class="control-group">
+                    <label>a (Coefficient):</label>
+                    <input type="number" id="quad-a" value="1" step="0.5" oninput="updateQuadratic()">
+                </div>
+                <div class="control-group">
+                    <label>b (Coefficient):</label>
+                    <input type="number" id="quad-b" value="-2" step="0.5" oninput="updateQuadratic()">
+                </div>
+                <div class="control-group">
+                    <label>c (Y-Intercept):</label>
+                    <input type="number" id="quad-c" value="-3" step="0.5" oninput="updateQuadratic()">
+                </div>
+
+                <div class="properties-box" id="quad-props">
+                    <strong>Key Features:</strong>
+                    <p id="quad-y-int">Y-Intercept: (0, -3)</p>
+                    <p id="quad-x-int">X-Intercepts: (3, 0), (-1, 0)</p>
+                    <p id="quad-vertex">Vertex: (1, -4)</p>
+                </div>
+
+                <div class="calculator">
+                    <strong>Point Finder</strong>
+                    <p style="font-size: 13px; color: #666;">Enter X to find Y, or enter Y to find X.</p>
+                    <div class="calc-inputs">
+                        <div>
+                            <label>X = </label>
+                            <input type="number" id="quad-calc-x" value="4" oninput="calcQuadY()">
+                        </div>
+                        <div>↔</div>
+                        <div>
+                            <label>Y = </label>
+                            <input type="number" id="quad-calc-y" value="5" oninput="calcQuadX()">
+                            <div id="quad-calc-y-res" style="font-size:12px; margin-top:5px; color: var(--primary);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="graph-wrapper">
+                <div id="quad-eq" class="dynamic-eq"></div>
+                <div id="graph-quadratic" class="graph-container"></div>
+            </div>
+        </div>
+
+        <!-- EXPONENTIAL TAB -->
+        <div id="exponential" class="tab-content">
+            <div class="controls">
+                <h2>f(x) = a · b<sup>x</sup></h2>
+                <p style="font-size: 13px; color: #666;">(Note: Base 'b' must be > 0)</p>
+                <div class="control-group">
+                    <label>Initial Value (a):</label>
+                    <input type="number" id="exp-a" value="2" step="0.5" oninput="updateExponential()">
+                </div>
+                <div class="control-group">
+                    <label>Base / Multiplier (b):</label>
+                    <input type="number" id="exp-b" value="1.5" step="0.1" min="0.01" oninput="updateExponential()">
+                </div>
+
+                <div class="properties-box" id="exp-props">
+                    <strong>Key Features:</strong>
+                    <p id="exp-y-int">Y-Intercept: (0, 2)</p>
+                    <p id="exp-asymptote">Horizontal Asymptote: y = 0</p>
+                    <p id="exp-growth">Behavior: Growth</p>
+                </div>
+
+                <div class="calculator">
+                    <strong>Point Finder</strong>
+                    <p style="font-size: 13px; color: #666;">Enter X to find Y, or enter Y to find X.</p>
+                    <div class="calc-inputs">
+                        <div>
+                            <label>X = </label>
+                            <input type="number" id="exp-calc-x" value="3" oninput="calcExpY()">
+                        </div>
+                        <div>↔</div>
+                        <div>
+                            <label>Y = </label>
+                            <input type="number" id="exp-calc-y" value="6.75" oninput="calcExpX()">
+                            <div id="exp-calc-y-res" style="font-size:12px; margin-top:5px; color: var(--primary);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="graph-wrapper">
+                <div id="exp-eq" class="dynamic-eq"></div>
+                <div id="graph-exponential" class="graph-container"></div>
+            </div>
+        </div>
+
+        <!-- LOGARITHMIC TAB -->
+        <div id="logarithmic" class="tab-content">
+            <div class="controls">
+                <h2>f(x) = a · log<sub>b</sub>(x) + c</h2>
+                <p style="font-size: 13px; color: #666;">(Note: Base 'b' must be > 0 and ≠ 1, x must be > 0)</p>
+                <div class="control-group">
+                    <label>Multiplier (a):</label>
+                    <input type="number" id="log-a" value="2" step="0.5" oninput="updateLogarithmic()">
+                </div>
+                <div class="control-group">
+                    <label>Base (b):</label>
+                    <input type="number" id="log-b" value="10" step="1" min="0.1" oninput="updateLogarithmic()">
+                </div>
+                <div class="control-group">
+                    <label>Vertical Shift (c):</label>
+                    <input type="number" id="log-c" value="0" step="1" oninput="updateLogarithmic()">
+                </div>
+
+                <div class="properties-box" id="log-props">
+                    <strong>Key Features:</strong>
+                    <p id="log-y-int">Y-Intercept: None (x must be > 0)</p>
+                    <p id="log-x-int">X-Intercept: (1, 0)</p>
+                    <p id="log-asymptote">Vertical Asymptote: x = 0</p>
+                </div>
+
+                <div class="calculator">
+                    <strong>Point Finder</strong>
+                    <p style="font-size: 13px; color: #666;">Enter X to find Y, or enter Y to find X.</p>
+                    <div class="calc-inputs">
+                        <div>
+                            <label>X = </label>
+                            <input type="number" id="log-calc-x" value="10" oninput="calcLogY()">
+                        </div>
+                        <div>↔</div>
+                        <div>
+                            <label>Y = </label>
+                            <input type="number" id="log-calc-y" value="2" oninput="calcLogX()">
+                            <div id="log-calc-y-res" style="font-size:12px; margin-top:5px; color: var(--primary);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="graph-wrapper">
+                <div id="log-eq" class="dynamic-eq"></div>
+                <div id="graph-logarithmic" class="graph-container"></div>
+            </div>
+        </div>
+
+        <!-- MODULAR (ABSOLUTE VALUE) TAB -->
+        <div id="modular" class="tab-content">
+            <div class="controls">
+                <h2>f(x) = a|x - h| + k</h2>
+                <div class="control-group">
+                    <label>Multiplier (a):</label>
+                    <input type="number" id="mod-a" value="1" step="0.5" oninput="updateModular()">
+                </div>
+                <div class="control-group">
+                    <label>Horizontal Shift (h):</label>
+                    <input type="number" id="mod-h" value="2" step="0.5" oninput="updateModular()">
+                </div>
+                <div class="control-group">
+                    <label>Vertical Shift (k):</label>
+                    <input type="number" id="mod-k" value="-3" step="0.5" oninput="updateModular()">
+                </div>
+
+                <div class="properties-box" id="mod-props">
+                    <strong>Key Features:</strong>
+                    <p id="mod-vertex">Vertex: (2, -3)</p>
+                    <p id="mod-y-int">Y-Intercept: (0, -1)</p>
+                    <p id="mod-x-int">X-Intercepts: (5, 0), (-1, 0)</p>
+                </div>
+
+                <div class="calculator">
+                    <strong>Point Finder</strong>
+                    <p style="font-size: 13px; color: #666;">Enter X to find Y, or enter Y to find X.</p>
+                    <div class="calc-inputs">
+                        <div>
+                            <label>X = </label>
+                            <input type="number" id="mod-calc-x" value="6" oninput="calcModY()">
+                        </div>
+                        <div>↔</div>
+                        <div>
+                            <label>Y = </label>
+                            <input type="number" id="mod-calc-y" value="1" oninput="calcModX()">
+                            <div id="mod-calc-y-res" style="font-size:12px; margin-top:5px; color: var(--primary);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="graph-wrapper">
+                <div id="mod-eq" class="dynamic-eq"></div>
+                <div id="graph-modular" class="graph-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Formatting Helper ---
+        function formatSign(val, isFirst = false) {
+            if (val === 0 && !isFirst) return "";
+            if (isFirst) return val.toString();
+            return val < 0 ? `- ${Math.abs(val)}` : `+ ${val}`;
+        }
+
+        // --- UI Logic ---
+        let currentTab = 'linear';
+
+        function resizeActiveGraph(tabId) {
+            const graphIds = {
+                linear: 'graph-linear',
+                quadratic: 'graph-quadratic',
+                exponential: 'graph-exponential',
+                logarithmic: 'graph-logarithmic',
+                modular: 'graph-modular'
+            };
+
+            const graphId = graphIds[tabId];
+            if (graphId && typeof Plotly !== 'undefined') {
+                Plotly.Plots.resize(graphId);
+            }
+        }
+
+        function switchTab(tabId, event) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if(event) event.currentTarget.classList.add('active');
+
+            currentTab = tabId;
+
+            // Re-render and relayout the graph after the tab becomes visible
+            if(tabId === 'linear') updateLinear();
+            if(tabId === 'quadratic') updateQuadratic();
+            if(tabId === 'exponential') updateExponential();
+            if(tabId === 'logarithmic') updateLogarithmic();
+            if(tabId === 'modular') updateModular();
+
+            requestAnimationFrame(() => {
+                setTimeout(() => resizeActiveGraph(tabId), 50);
+            });
+        }
+
+        const layoutConfig = {
+            margin: { t: 30, b: 30, l: 40, r: 20 },
+            xaxis: { title: 'X-Axis', zeroline: true, zerolinewidth: 2, zerolinecolor: '#000', gridcolor: '#e5e7eb' },
+            yaxis: { title: 'Y-Axis', zeroline: true, zerolinewidth: 2, zerolinecolor: '#000', gridcolor: '#e5e7eb' },
+            showlegend: false,
+            plot_bgcolor: '#F9FAFB'
+        };
+
+        function generateData(fn, range = [-10, 10], steps = 200) {
+            let x = [], y = [];
+            let step = (range[1] - range[0]) / steps;
+            for (let i = range[0]; i <= range[1]; i += step) {
+                x.push(i);
+                y.push(fn(i));
+            }
+            return { x, y };
+        }
+
+        // --- LINEAR FUNCTIONS ---
+        function updateLinear() {
+            let a = parseFloat(document.getElementById('lin-a').value);
+            let b = parseFloat(document.getElementById('lin-b').value);
+
+            let bStr = b === 0 ? "" : (b < 0 ? `- ${Math.abs(b)}` : `+ ${b}`);
+            document.getElementById('lin-eq').innerHTML = `f(x) = ${a}x ${bStr}`;
+
+            document.getElementById('lin-y-int').innerText = `Y-Intercept: (0, ${b})`;
+            if (a === 0) {
+                document.getElementById('lin-x-int').innerText = b === 0 ? "X-Intercept: All Real Numbers" : "X-Intercept: None";
+            } else {
+                let xInt = (-b / a);
+                document.getElementById('lin-x-int').innerText = `X-Intercept (Root): (${xInt.toFixed(2)}, 0)`;
+            }
+
+            let data = generateData(x => a * x + b);
+            let trace = { x: data.x, y: data.y, type: 'scatter', mode: 'lines', line: {color: '#4F46E5', width: 3} };
+            Plotly.newPlot('graph-linear', [trace], layoutConfig, {responsive: true});
+            calcLinearY();
+        }
+
+        function calcLinearY() {
+            let a = parseFloat(document.getElementById('lin-a').value);
+            let b = parseFloat(document.getElementById('lin-b').value);
+            let x = parseFloat(document.getElementById('lin-calc-x').value);
+            if(!isNaN(x)) document.getElementById('lin-calc-y').value = +(a * x + b).toFixed(4);
+        }
+
+        function calcLinearX() {
+            let a = parseFloat(document.getElementById('lin-a').value);
+            let b = parseFloat(document.getElementById('lin-b').value);
+            let y = parseFloat(document.getElementById('lin-calc-y').value);
+            if(!isNaN(y)) {
+                document.getElementById('lin-calc-x').value = a !== 0 ? +((y - b) / a).toFixed(4) : "";
+            }
+        }
+
+        // --- QUADRATIC FUNCTIONS ---
+        function updateQuadratic() {
+            let a = parseFloat(document.getElementById('quad-a').value);
+            let b = parseFloat(document.getElementById('quad-b').value);
+            let c = parseFloat(document.getElementById('quad-c').value);
+
+            if (a === 0) a = 0.0001; 
+
+            let bStr = b === 0 ? "" : (b < 0 ? `- ${Math.abs(b)}x` : `+ ${b}x`);
+            let cStr = c === 0 ? "" : (c < 0 ? `- ${Math.abs(c)}` : `+ ${c}`);
+            document.getElementById('quad-eq').innerHTML = `f(x) = ${a}x² ${bStr} ${cStr}`;
+
+            document.getElementById('quad-y-int').innerText = `Y-Intercept: (0, ${c})`;
+            let vx = -b / (2 * a);
+            let vy = a * vx * vx + b * vx + c;
+            document.getElementById('quad-vertex').innerText = `Vertex: (${vx.toFixed(2)}, ${vy.toFixed(2)})`;
+
+            let discriminant = b * b - 4 * a * c;
+            if (discriminant > 0) {
+                let x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                let x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                document.getElementById('quad-x-int').innerText = `X-Intercepts: (${x1.toFixed(2)}, 0), (${x2.toFixed(2)}, 0)`;
+            } else if (discriminant === 0) {
+                document.getElementById('quad-x-int').innerText = `X-Intercept: (${(-b / (2 * a)).toFixed(2)}, 0)`;
+            } else {
+                document.getElementById('quad-x-int').innerText = `X-Intercepts: None (No real roots)`;
+            }
+
+            let data = generateData(x => a * x * x + b * x + c, [vx - 10, vx + 10]); 
+            let trace = { x: data.x, y: data.y, type: 'scatter', mode: 'lines', line: {color: '#10B981', width: 3} };
+            Plotly.newPlot('graph-quadratic', [trace], layoutConfig, {responsive: true});
+            calcQuadY();
+        }
+
+        function calcQuadY() {
+            let a = parseFloat(document.getElementById('quad-a').value);
+            let b = parseFloat(document.getElementById('quad-b').value);
+            let c = parseFloat(document.getElementById('quad-c').value);
+            let x = parseFloat(document.getElementById('quad-calc-x').value);
+            if(!isNaN(x)) {
+                document.getElementById('quad-calc-y').value = +(a * x * x + b * x + c).toFixed(4);
+                document.getElementById('quad-calc-y-res').innerText = "";
+            }
+        }
+
+        function calcQuadX() {
+            let a = parseFloat(document.getElementById('quad-a').value);
+            let b = parseFloat(document.getElementById('quad-b').value);
+            let c = parseFloat(document.getElementById('quad-c').value);
+            let y = parseFloat(document.getElementById('quad-calc-y').value);
+            let resBox = document.getElementById('quad-calc-y-res');
+            
+            if(!isNaN(y)) {
+                let c_new = c - y;
+                let discriminant = b * b - 4 * a * c_new;
+                if (discriminant > 0) {
+                    let x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                    let x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                    document.getElementById('quad-calc-x').value = +x1.toFixed(4);
+                    resBox.innerText = `Or X = ${x2.toFixed(4)}`;
+                } else if (discriminant === 0) {
+                    document.getElementById('quad-calc-x').value = +(-b / (2 * a)).toFixed(4);
+                    resBox.innerText = `(Only one solution)`;
+                } else {
+                    document.getElementById('quad-calc-x').value = "";
+                    resBox.innerText = `No real X for this Y`;
+                }
+            }
+        }
+
+        // --- EXPONENTIAL FUNCTIONS ---
+        function updateExponential() {
+            let a = parseFloat(document.getElementById('exp-a').value);
+            let b = parseFloat(document.getElementById('exp-b').value);
+            if (b <= 0) b = 0.001; 
+
+            document.getElementById('exp-eq').innerHTML = `f(x) = ${a} · ${b}<sup>x</sup>`;
+
+            document.getElementById('exp-y-int').innerText = `Y-Intercept: (0, ${a})`;
+            document.getElementById('exp-asymptote').innerText = `Horizontal Asymptote: y = 0`;
+            
+            let behavior = a > 0 && b > 1 ? "Exponential Growth" : (a > 0 && b > 0 && b < 1 ? "Exponential Decay" : "Reflected / Complex");
+            document.getElementById('exp-growth').innerText = `Behavior: ${behavior}`;
+
+            let data = generateData(x => a * Math.pow(b, x), [-5, 5]); 
+            let trace = { x: data.x, y: data.y, type: 'scatter', mode: 'lines', line: {color: '#F59E0B', width: 3} };
+            Plotly.newPlot('graph-exponential', [trace], layoutConfig, {responsive: true});
+            calcExpY();
+        }
+
+        function calcExpY() {
+            let a = parseFloat(document.getElementById('exp-a').value);
+            let b = parseFloat(document.getElementById('exp-b').value);
+            let x = parseFloat(document.getElementById('exp-calc-x').value);
+            if(!isNaN(x)) document.getElementById('exp-calc-y').value = +(a * Math.pow(b, x)).toFixed(4);
+        }
+
+        function calcExpX() {
+            let a = parseFloat(document.getElementById('exp-a').value);
+            let b = parseFloat(document.getElementById('exp-b').value);
+            let y = parseFloat(document.getElementById('exp-calc-y').value);
+            let resBox = document.getElementById('exp-calc-y-res');
+
+            if(!isNaN(y)) {
+                let val = y / a;
+                if (val > 0 && b > 0 && b !== 1) {
+                    document.getElementById('exp-calc-x').value = +(Math.log(val) / Math.log(b)).toFixed(4);
+                    resBox.innerText = "";
+                } else {
+                    document.getElementById('exp-calc-x').value = "";
+                    resBox.innerText = "No real solution / out of bounds";
+                }
+            }
+        }
+
+        // --- LOGARITHMIC FUNCTIONS ---
+        function updateLogarithmic() {
+            let a = parseFloat(document.getElementById('log-a').value);
+            let b = parseFloat(document.getElementById('log-b').value);
+            let c = parseFloat(document.getElementById('log-c').value);
+
+            if (b <= 0 || b === 1) b = 2;
+
+            let cStr = c === 0 ? "" : (c < 0 ? `- ${Math.abs(c)}` : `+ ${c}`);
+            document.getElementById('log-eq').innerHTML = `f(x) = ${a} · log<sub>${b}</sub>(x) ${cStr}`;
+
+            if(a !== 0) {
+                let xInt = Math.pow(b, -c/a);
+                document.getElementById('log-x-int').innerText = `X-Intercept: (${xInt.toFixed(3)}, 0)`;
+            } else {
+                document.getElementById('log-x-int').innerText = "X-Intercept: None";
+            }
+
+            let data = generateData(x => a * (Math.log(x) / Math.log(b)) + c, [0.01, 20], 300);
+            let trace = { x: data.x, y: data.y, type: 'scatter', mode: 'lines', line: {color: '#8B5CF6', width: 3} };
+            Plotly.newPlot('graph-logarithmic', [trace], layoutConfig, {responsive: true});
+            calcLogY();
+        }
+
+        function calcLogY() {
+            let a = parseFloat(document.getElementById('log-a').value);
+            let b = parseFloat(document.getElementById('log-b').value);
+            let c = parseFloat(document.getElementById('log-c').value);
+            let x = parseFloat(document.getElementById('log-calc-x').value);
+            let resBox = document.getElementById('log-calc-y-res');
+
+            if(!isNaN(x)) {
+                if(x > 0 && b > 0 && b !== 1) {
+                    document.getElementById('log-calc-y').value = +(a * (Math.log(x) / Math.log(b)) + c).toFixed(4);
+                    resBox.innerText = "";
+                } else {
+                    document.getElementById('log-calc-y').value = "";
+                    resBox.innerText = "X must be > 0";
+                }
+            }
+        }
+
+        function calcLogX() {
+            let a = parseFloat(document.getElementById('log-a').value);
+            let b = parseFloat(document.getElementById('log-b').value);
+            let c = parseFloat(document.getElementById('log-c').value);
+            let y = parseFloat(document.getElementById('log-calc-y').value);
+            let resBox = document.getElementById('log-calc-y-res');
+
+            if(!isNaN(y)) {
+                if (a !== 0 && b > 0 && b !== 1) {
+                    let p = (y - c) / a;
+                    document.getElementById('log-calc-x').value = +(Math.pow(b, p)).toFixed(4);
+                    resBox.innerText = "";
+                } else {
+                    document.getElementById('log-calc-x').value = "";
+                    resBox.innerText = "Invalid variables";
+                }
+            }
+        }
+
+        // --- MODULAR (ABSOLUTE VALUE) FUNCTIONS ---
+        function updateModular() {
+            let a = parseFloat(document.getElementById('mod-a').value);
+            let h = parseFloat(document.getElementById('mod-h').value);
+            let k = parseFloat(document.getElementById('mod-k').value);
+
+            let hStr = h === 0 ? "" : (h < 0 ? `+ ${Math.abs(h)}` : `- ${h}`);
+            let kStr = k === 0 ? "" : (k < 0 ? `- ${Math.abs(k)}` : `+ ${k}`);
+            document.getElementById('mod-eq').innerHTML = `f(x) = ${a}|x ${hStr}| ${kStr}`;
+
+            document.getElementById('mod-vertex').innerText = `Vertex: (${h}, ${k})`;
+            let yInt = a * Math.abs(0 - h) + k;
+            document.getElementById('mod-y-int').innerText = `Y-Intercept: (0, ${yInt.toFixed(2)})`;
+
+            if (a !== 0) {
+                let val = -k / a;
+                if (val > 0) {
+                    let x1 = h + val;
+                    let x2 = h - val;
+                    document.getElementById('mod-x-int').innerText = `X-Intercepts: (${x1.toFixed(2)}, 0), (${x2.toFixed(2)}, 0)`;
+                } else if (val === 0) {
+                    document.getElementById('mod-x-int').innerText = `X-Intercept: (${h.toFixed(2)}, 0)`;
+                } else {
+                    document.getElementById('mod-x-int').innerText = `X-Intercepts: None`;
+                }
+            }
+
+            let data = generateData(x => a * Math.abs(x - h) + k, [h - 10, h + 10]); 
+            let trace = { x: data.x, y: data.y, type: 'scatter', mode: 'lines', line: {color: '#EC4899', width: 3} };
+            Plotly.newPlot('graph-modular', [trace], layoutConfig, {responsive: true});
+            calcModY();
+        }
+
+        function calcModY() {
+            let a = parseFloat(document.getElementById('mod-a').value);
+            let h = parseFloat(document.getElementById('mod-h').value);
+            let k = parseFloat(document.getElementById('mod-k').value);
+            let x = parseFloat(document.getElementById('mod-calc-x').value);
+            if(!isNaN(x)) {
+                document.getElementById('mod-calc-y').value = +(a * Math.abs(x - h) + k).toFixed(4);
+                document.getElementById('mod-calc-y-res').innerText = "";
+            }
+        }
+
+        function calcModX() {
+            let a = parseFloat(document.getElementById('mod-a').value);
+            let h = parseFloat(document.getElementById('mod-h').value);
+            let k = parseFloat(document.getElementById('mod-k').value);
+            let y = parseFloat(document.getElementById('mod-calc-y').value);
+            let resBox = document.getElementById('mod-calc-y-res');
+
+            if(!isNaN(y)) {
+                if (a !== 0) {
+                    let val = (y - k) / a;
+                    if (val > 0) {
+                        let x1 = h + val;
+                        let x2 = h - val;
+                        document.getElementById('mod-calc-x').value = +x1.toFixed(4);
+                        resBox.innerText = `Or X = ${x2.toFixed(4)}`;
+                    } else if (val === 0) {
+                        document.getElementById('mod-calc-x').value = +h.toFixed(4);
+                        resBox.innerText = `(Only one solution)`;
+                    } else {
+                        document.getElementById('mod-calc-x').value = "";
+                        resBox.innerText = `No real X for this Y`;
+                    }
+                }
+            }
+        }
+
+        // Initialize the active graph on load and keep all tabs responsive on resize
+        window.onload = () => {
+            updateLinear();
+            window.addEventListener('resize', () => resizeActiveGraph(currentTab));
+        };
+    </script>
+</body>
+</html>
