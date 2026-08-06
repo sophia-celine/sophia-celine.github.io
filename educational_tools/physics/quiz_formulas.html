@@ -228,20 +228,60 @@
 
 </div>
 
+<script src="questionDatabase.js"></script>
 <script>
-    // Banco Completo Injetado do Python
-    const questionDatabase = [{"category": "MRU e MRUV", "title": "Deslocamento (MRU)", "context": "Em um movimento sem aceleração, a distância percorrida aumenta uniformemente com o passar do tempo.", "varsPrompt": "A variação de espaço (Δs) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["velocidade", "v"]}, {"id": "var_1", "synonyms": ["tempo", "variacao de tempo", "delta t", "t"]}], "validFormulas": ["\\Delta s=v\\cdot\\Delta t", "\\Delta s=v\\Delta t", "\\Delta s=v\\cdot t", "s=vt"], "displayFormula": "\\Delta s = v \\cdot \\Delta t"}, {"category": "MRU e MRUV", "title": "Aceleração Média", "context": "Quando você pisa no acelerador ou no freio, a velocidade do carro muda ao longo do tempo.", "varsPrompt": "A aceleração (a) mede a rapidez dessa mudança. De quais grandezas ela depende?", "vars": [{"id": "var_0", "synonyms": ["variacao de velocidade", "velocidade", "delta v", "v"]}, {"id": "var_1", "synonyms": ["tempo", "variacao de tempo", "delta t", "t"]}], "validFormulas": ["a=\\frac{\\Delta v}{\\Delta t}", "a=\\Delta v/\\Delta t"], "displayFormula": "a = \\frac{\\Delta v}{\\Delta t}"}, {"category": "MRU e MRUV", "title": "Função Horária da Velocidade", "context": "Um objeto já possui uma velocidade inicial e começa a acelerar. Sua velocidade futura dependerá do tempo que ele passa acelerando.", "varsPrompt": "A velocidade final (v) em um MRUV depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["velocidade inicial", "v0"]}, {"id": "var_1", "synonyms": ["aceleracao", "a"]}, {"id": "var_2", "synonyms": ["tempo", "t"]}], "validFormulas": ["v=v_0+a\\cdot t", "v=v_0+at", "v=v0+at"], "displayFormula": "v = v_0 + a \\cdot t"}, {"category": "MRU e MRUV", "title": "Equação de Torricelli", "context": "Às vezes não sabemos o tempo que um movimento durou, mas sabemos a distância percorrida enquanto o objeto freava ou acelerava.", "varsPrompt": "O quadrado da velocidade final (v²) depende de quais grandezas (sem usar o tempo)?", "vars": [{"id": "var_0", "synonyms": ["velocidade inicial", "v0"]}, {"id": "var_1", "synonyms": ["aceleracao", "a"]}, {"id": "var_2", "synonyms": ["deslocamento", "distancia", "delta s"]}], "validFormulas": ["v^2=v_0^2+2a\\Delta s", "v^2=v_0^2+2\\cdot a\\cdot\\Delta s", "v^2=v0^2+2a\\Delta s"], "displayFormula": "v^2 = v_0^2 + 2 \\cdot a \\cdot \\Delta s"}, {"category": "MRU e MRUV", "title": "Função Horária da Posição", "context": "Para prever a posição exata de um corpo acelerado, precisamos considerar de onde ele saiu, sua velocidade original e sua aceleração.", "varsPrompt": "A posição final (s) no MRUV depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["posicao inicial", "s0"]}, {"id": "var_1", "synonyms": ["velocidade inicial", "v0"]}, {"id": "var_2", "synonyms": ["tempo", "t"]}, {"id": "var_3", "synonyms": ["aceleracao", "a"]}], "validFormulas": ["s=s_0+v_0t+\\frac{at^2}{2}", "s=s_0+v_0\\cdot t+\\frac{a\\cdot t^2}{2}"], "displayFormula": "s = s_0 + v_0 \\cdot t + \\frac{a \\cdot t^2}{2}"}, {"category": "Gases", "title": "Equação de Clapeyron", "context": "O estado de um gás ideal confinado relaciona suas principais propriedades macroscópicas e a quantidade de partículas.", "varsPrompt": "Para um gás ideal, o produto da Pressão (P) pelo Volume (V) depende de quais grandezas (ignorando a constante R)?", "vars": [{"id": "var_0", "synonyms": ["numero de mols", "mols", "n"]}, {"id": "var_1", "synonyms": ["temperatura", "t"]}], "validFormulas": ["PV=nRT", "P\\cdot V=n\\cdot R\\cdot T"], "displayFormula": "P \\cdot V = n \\cdot R \\cdot T"}, {"category": "Gases", "title": "Energia Interna (Gás Monoatômico)", "context": "As moléculas de um gás estão em constante agitação. A energia total desse movimento interno pode ser calculada.", "varsPrompt": "A energia interna (U) de um gás ideal monoatômico depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["numero de mols", "n"]}, {"id": "var_1", "synonyms": ["temperatura", "t"]}], "validFormulas": ["U=\\frac{3}{2}nRT", "U=\\frac{3}{2}\\cdot n\\cdot R\\cdot T"], "displayFormula": "U_{mono} = \\frac{3}{2} \\cdot n \\cdot R \\cdot T"}, {"category": "Gases", "title": "Trabalho de um Gás", "context": "Quando um gás se expande, ele empurra as paredes do recipiente (como um êmbolo), realizando trabalho (W) sobre o meio.", "varsPrompt": "O Trabalho (W) realizado por um gás a pressão constante depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["pressao", "p"]}, {"id": "var_1", "synonyms": ["variacao de volume", "delta v", "volume"]}], "validFormulas": ["W=P\\cdot\\Delta V", "W=P\\Delta V"], "displayFormula": "W = P \\cdot \\Delta V"}, {"category": "Gases", "title": "1ª Lei da Termodinâmica", "context": "O calor (Q) que um sistema recebe pode ser usado para aquecer o gás (aumentar a energia interna) ou para o gás realizar trabalho expandindo-se.", "varsPrompt": "A quantidade de Calor (Q) trocada se divide em quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["variacao da energia interna", "delta u"]}, {"id": "var_1", "synonyms": ["trabalho", "w"]}], "validFormulas": ["Q=\\Delta U+W", "Q=W+\\Delta U"], "displayFormula": "Q = \\Delta U + W"}, {"category": "Termodinâmica", "title": "Calor Sensível", "context": "Para esquentar a água do café, você fornece energia. A quantidade de calor depende do quanto de água tem e do quanto você quer esquentar.", "varsPrompt": "A quantidade de calor sensível (Q) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["calor especifico", "c"]}, {"id": "var_2", "synonyms": ["variacao de temperatura", "delta theta", "delta t"]}], "validFormulas": ["Q=mc\\Delta\\theta", "Q=m\\cdot c\\cdot\\Delta\\theta", "Q=mc\\Delta T"], "displayFormula": "Q = m \\cdot c \\cdot \\Delta \\theta"}, {"category": "Termodinâmica", "title": "Calor Latente", "context": "Quando um cubo de gelo está derretendo, ele absorve calor sem mudar sua temperatura. A energia é gasta apenas para quebrar as ligações de estado físico.", "varsPrompt": "O calor latente de mudança de fase (Q) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["calor latente", "l", "constante latente"]}], "validFormulas": ["Q=mL", "Q=m\\cdot L"], "displayFormula": "Q = m \\cdot L"}, {"category": "Circuitos", "title": "1ª Lei de Ohm", "context": "A corrente que passa por um fio depende do quão 'forte' é a tensão aplicada e do quanto o fio 'resiste' à passagem.", "varsPrompt": "A Tensão ou DDP (U) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["resistencia", "r"]}, {"id": "var_1", "synonyms": ["corrente", "i"]}], "validFormulas": ["U=R\\cdot i", "U=Ri", "V=Ri"], "displayFormula": "U = R \\cdot i"}, {"category": "Circuitos", "title": "Potência Elétrica", "context": "O brilho de uma lâmpada indica o quão rápido ela converte energia elétrica em luz e calor.", "varsPrompt": "A Potência (P) dissipada por um equipamento elétrico depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["corrente", "i"]}, {"id": "var_1", "synonyms": ["tensao", "ddp", "u"]}], "validFormulas": ["P=i\\cdot U", "P=iU", "P=U\\cdot i"], "displayFormula": "P = i \\cdot U"}, {"category": "Circuitos", "title": "Energia Elétrica", "context": "A conta de luz é cobrada com base na potência dos seus aparelhos e do tempo que eles ficam ligados.", "varsPrompt": "A Energia Elétrica (E) consumida depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["potencia", "p"]}, {"id": "var_1", "synonyms": ["tempo", "delta t", "t"]}], "validFormulas": ["E=P\\cdot\\Delta t", "E=P\\Delta t", "E=Pt"], "displayFormula": "E = P \\cdot \\Delta t"}, {"category": "Circuitos", "title": "Resistores em Série", "context": "Quando você coloca obstáculos (resistores) um após o outro no mesmo caminho, a dificuldade total para a corrente aumenta somando-se.", "varsPrompt": "A Resistência Equivalente (Req) em série depende das resistências individuais. Qual a relação matemática simples? (Escreva a soma de R1 e R2)", "vars": [{"id": "var_0", "synonyms": ["resistencia 1", "r1"]}, {"id": "var_1", "synonyms": ["resistencia 2", "r2"]}], "validFormulas": ["R_{eq}=R_1+R_2", "R=R_1+R_2"], "displayFormula": "R_{eq} = R_1 + R_2 + ..."}, {"category": "Circuitos", "title": "Resistores em Paralelo", "context": "Ao abrir vários caminhos simultâneos (paralelo) para a corrente, a dificuldade total (resistência equivalente) diminui.", "varsPrompt": "O inverso da Resistência Equivalente (1/Req) é a soma dos inversos. De quais resistências depende? (Considere 2 caminhos, R1 e R2)", "vars": [{"id": "var_0", "synonyms": ["resistencia 1", "r1"]}, {"id": "var_1", "synonyms": ["resistencia 2", "r2"]}], "validFormulas": ["\\frac{1}{R_{eq}}=\\frac{1}{R_1}+\\frac{1}{R_2}", "1/R_{eq}=1/R_1+1/R_2"], "displayFormula": "\\frac{1}{R_{eq}} = \\frac{1}{R_1} + \\frac{1}{R_2} + ..."}, {"category": "Ondulatória", "title": "Equação Fundamental da Onda", "context": "A velocidade com que uma onda avança no mar depende da distância entre duas cristas (comprimento) e de quantas cristas passam por segundo (frequência).", "varsPrompt": "A velocidade de propagação (v) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["comprimento de onda", "lambda"]}, {"id": "var_1", "synonyms": ["frequencia", "f"]}], "validFormulas": ["v=\\lambda\\cdot f", "v=\\lambda f"], "displayFormula": "v = \\lambda \\cdot f"}, {"category": "Energia", "title": "Energia Cinética", "context": "O potencial de dano de um objeto em movimento cresce muito com sua velocidade e sua massa.", "varsPrompt": "A Energia Cinética (Ec) de um corpo depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["velocidade", "v"]}], "validFormulas": ["E_c=\\frac{mv^2}{2}", "E_c=\\frac{m\\cdot v^2}{2}"], "displayFormula": "E_c = \\frac{m \\cdot v^2}{2}"}, {"category": "Energia", "title": "Energia Potencial Gravitacional", "context": "Ao levantar um peso, você armazena energia nele. Quanto mais alto e mais pesado, mais energia é acumulada.", "varsPrompt": "A Energia Potencial Gravitacional (Epg) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["gravidade", "g"]}, {"id": "var_2", "synonyms": ["altura", "h"]}], "validFormulas": ["E_{pg}=mgh", "E_{pg}=m\\cdot g\\cdot h"], "displayFormula": "E_{pg} = m \\cdot g \\cdot h"}, {"category": "Energia", "title": "Energia Potencial Elástica", "context": "Ao esticar um estilingue ou amassar uma mola, energia é guardada na deformação.", "varsPrompt": "A Energia Potencial Elástica (Eel) armazenada em uma mola depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["constante elastica", "k"]}, {"id": "var_1", "synonyms": ["deformacao", "x"]}], "validFormulas": ["E_{el}=\\frac{kx^2}{2}", "E_{el}=\\frac{k\\cdot x^2}{2}"], "displayFormula": "E_{el} = \\frac{k \\cdot x^2}{2}"}, {"category": "Dinâmica / Forças", "title": "Força Peso", "context": "A força que a Terra exerce puxando você para o chão é constante e depende da sua constituição e da gravidade local.", "varsPrompt": "O Peso (P) de um corpo depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["gravidade", "g", "aceleracao da gravidade"]}], "validFormulas": ["P=mg", "P=m\\cdot g"], "displayFormula": "P = m \\cdot g"}, {"category": "Dinâmica / Forças", "title": "Força de Atrito", "context": "É mais difícil empurrar um móvel pesado no carpete do que no piso liso. O atrito depende do contato entre as superfícies.", "varsPrompt": "A Força de Atrito (Fat) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["coeficiente de atrito", "mi", "rugosidade"]}, {"id": "var_1", "synonyms": ["forca normal", "normal", "n"]}], "validFormulas": ["F_{at}=\\mu\\cdot N", "F_{at}=\\mu N", "Fat=\\mu N"], "displayFormula": "F_{at} = \\mu \\cdot N"}, {"category": "Dinâmica / Forças", "title": "Lei de Hooke (Força Elástica)", "context": "Quanto mais você tenta esticar uma mola resistente, mais força ela faz puxando de volta.", "varsPrompt": "A Força Elástica (Fel) feita pela mola depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["constante elastica", "k"]}, {"id": "var_1", "synonyms": ["deformacao", "x"]}], "validFormulas": ["F_{el}=kx", "F_{el}=k\\cdot x"], "displayFormula": "F_{el} = k \\cdot x"}, {"category": "Dinâmica / Forças", "title": "2ª Lei de Newton", "context": "Para fazer um corpo acelerar, você precisa aplicar uma força resultante. Quanto mais massivo, mais força é necessária.", "varsPrompt": "A Força Resultante (Fr) sobre um corpo depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["aceleracao", "a"]}], "validFormulas": ["F_r=ma", "F_r=m\\cdot a", "F=ma"], "displayFormula": "F_r = m \\cdot a"}, {"category": "Movimento Circular", "title": "Velocidade Linear no MCU", "context": "Na borda de um disco giratório, a velocidade linear depende do quão rápido o disco gira e do quão distante você está do centro.", "varsPrompt": "A velocidade escalar ou linear (v) em um MCU depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["velocidade angular", "omega", "w"]}, {"id": "var_1", "synonyms": ["raio", "r"]}], "validFormulas": ["v=\\omega R", "v=\\omega\\cdot R"], "displayFormula": "v = \\omega \\cdot R"}, {"category": "Movimento Circular", "title": "Velocidade Angular e Período", "context": "A velocidade com que um ângulo é percorrido (uma volta inteira é 2π radianos) depende do tempo gasto para dar essa volta (Período).", "varsPrompt": "A velocidade angular (ω) depende do período (T). Qual a fórmula que as relaciona?", "vars": [{"id": "var_0", "synonyms": ["periodo", "t", "tempo"]}], "validFormulas": ["\\omega=\\frac{2\\pi}{T}", "w=\\frac{2\\pi}{T}"], "displayFormula": "\\omega = \\frac{2 \\cdot \\pi}{T}"}, {"category": "Movimento Circular", "title": "Frequência e Período", "context": "Frequência é o número de voltas por segundo, e Período é o tempo de uma volta. Eles são o inverso um do outro.", "varsPrompt": "A frequência (f) de um movimento cíclico depende do Período (T). Qual a relação?", "vars": [{"id": "var_0", "synonyms": ["periodo", "t"]}], "validFormulas": ["f=\\frac{1}{T}", "f=1/T"], "displayFormula": "f = \\frac{1}{T}"}, {"category": "Movimento Circular", "title": "Aceleração Centrípeta", "context": "Para fazer uma curva, deve haver uma força puxando para o centro. A aceleração associada a essa mudança de direção depende da velocidade e do quão fechada é a curva.", "varsPrompt": "A Aceleração Centrípeta (ac) depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["velocidade", "v"]}, {"id": "var_1", "synonyms": ["raio", "r"]}], "validFormulas": ["a_c=\\frac{v^2}{R}", "ac=\\frac{v^2}{R}"], "displayFormula": "a_c = \\frac{v^2}{R}"}, {"category": "Eletrostática", "title": "Lei de Coulomb", "context": "Cargas iguais se repelem, cargas opostas se atraem. A intensidade do 'puxão' ou 'empurrão' diminui com o quadrado da distância.", "varsPrompt": "A Força Elétrica (Fel) entre duas partículas depende de quais grandezas (além da constante k)?", "vars": [{"id": "var_0", "synonyms": ["carga 1", "q1"]}, {"id": "var_1", "synonyms": ["carga 2", "q2"]}, {"id": "var_2", "synonyms": ["distancia", "d"]}], "validFormulas": ["F_{el}=\\frac{k\\cdot q_1\\cdot q_2}{d^2}", "F=\\frac{kq_1q_2}{d^2}"], "displayFormula": "F_{el} = \\frac{k \\cdot q_1 \\cdot q_2}{d^2}"}, {"category": "Eletrostática", "title": "Potencial Elétrico", "context": "Ao redor de uma carga, existe um 'relevo' elétrico. O nível desse relevo (potencial) diminui conforme você se afasta da carga central.", "varsPrompt": "O Potencial Elétrico (V) gerado por uma partícula depende de quais grandezas (além da constante k)?", "vars": [{"id": "var_0", "synonyms": ["carga geradora", "q"]}, {"id": "var_1", "synonyms": ["distancia", "d"]}], "validFormulas": ["V=\\frac{kq}{d}", "V=\\frac{k\\cdot q}{d}"], "displayFormula": "V = \\frac{k \\cdot q}{d}"}, {"category": "Eletromagnetismo", "title": "Força Magnética", "context": "Uma carga se movendo cortando um campo magnético sofre um desvio em sua rota. Parada, ela não sente nada.", "varsPrompt": "A Força Magnética (Fmag) máxima sobre uma carga depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["carga", "q"]}, {"id": "var_1", "synonyms": ["velocidade", "v"]}, {"id": "var_2", "synonyms": ["campo magnetico", "b"]}], "validFormulas": ["F_{mag}=qvB", "F_{mag}=q\\cdot v\\cdot B"], "displayFormula": "F_{mag} = q \\cdot v \\cdot B"}, {"category": "Eletromagnetismo", "title": "Raio da Trajetória no Campo Magnético", "context": "Quando a força magnética faz a carga girar, a partícula entra em um movimento circular uniforme. O tamanho dessa curva varia.", "varsPrompt": "O Raio (R) da trajetória circular de uma carga em um campo magnético uniforme depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["massa", "m"]}, {"id": "var_1", "synonyms": ["velocidade", "v"]}, {"id": "var_2", "synonyms": ["carga", "q"]}, {"id": "var_3", "synonyms": ["campo magnetico", "b"]}], "validFormulas": ["R=\\frac{mv}{qB}", "R=\\frac{m\\cdot v}{q\\cdot B}"], "displayFormula": "R = \\frac{m \\cdot v}{q \\cdot B}"}, {"category": "Eletromagnetismo", "title": "Fluxo Magnético", "context": "Imagine as linhas do campo magnético como chuva caindo através de uma janela. O quanto de 'chuva' passa depende da intensidade da chuva, da área da janela e do ângulo dela.", "varsPrompt": "O Fluxo Magnético (Φ) através de uma superfície plana depende de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["campo magnetico", "b"]}, {"id": "var_1", "synonyms": ["area", "a"]}, {"id": "var_2", "synonyms": ["angulo", "alfa", "cos alfa", "cos"]}], "validFormulas": ["\\phi=B\\cdot A\\cdot\\cos\\alpha", "\\phi=BA\\cos\\alpha", "\\Phi=BA\\cos\\alpha"], "displayFormula": "\\phi = B \\cdot A \\cdot \\cos\\alpha"}, {"category": "Eletromagnetismo", "title": "Lei de Faraday-Lenz", "context": "O princípio por trás dos geradores de energia. Variar a quantidade de 'linhas de campo' que atravessam uma bobina ao longo do tempo cria uma tensão induzida.", "varsPrompt": "A Força Eletromotriz Induzida (ε) depende da variação de quais grandezas?", "vars": [{"id": "var_0", "synonyms": ["fluxo magnetico", "variacao do fluxo", "delta phi", "phi"]}, {"id": "var_1", "synonyms": ["tempo", "variacao de tempo", "delta t", "t"]}], "validFormulas": ["\\varepsilon=-\\frac{\\Delta\\phi}{\\Delta t}", "E=-\\frac{\\Delta\\Phi}{\\Delta t}", "\\varepsilon=-\\Delta\\phi/\\Delta t"], "displayFormula": "\\varepsilon = -\\frac{\\Delta \\phi}{\\Delta t}"}];
-
+    let questionDatabase = [];
     let quizQueue = [];
     let currentIndex = 0;
     let savedAnswers = {};
+    let setupInitialized = false;
 
-    // INICIALIZAÇÃO - CRIANDO CHECKBOXES
-    window.onload = function() {
+    async function loadQuestionDatabase() {
+        if (Array.isArray(window.questionDatabase) && window.questionDatabase.length > 0) {
+            questionDatabase = window.questionDatabase;
+            return questionDatabase;
+        }
+
+        try {
+            const response = await fetch('questionDatabase.json');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            if (Array.isArray(data)) {
+                questionDatabase = data;
+                window.questionDatabase = data;
+                return questionDatabase;
+            }
+        } catch (error) {
+            console.warn('Não foi possível carregar questionDatabase.json:', error);
+            questionDatabase = [];
+        }
+
+        return questionDatabase;
+    }
+
+    async function initializeQuizSetup() {
+        if (setupInitialized) return;
+        setupInitialized = true;
+
+        await loadQuestionDatabase();
+
         const container = document.getElementById('category-container');
-        const categories = [...new Set(questionDatabase.map(q => q.category))];
-        
-        // Criar opção "Selecionar Todos"
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        const categories = [...new Set(questionDatabase.map(q => q.category).filter(Boolean))];
+
+        if (categories.length === 0) {
+            const emptyMessage = document.createElement('p');
+            emptyMessage.style.gridColumn = '1 / -1';
+            emptyMessage.style.color = 'var(--text-muted)';
+            emptyMessage.textContent = 'Nenhum assunto encontrado no arquivo de dados.';
+            container.appendChild(emptyMessage);
+            updateMaxQuestions();
+            return;
+        }
+
         const allLabel = document.createElement('label');
         allLabel.className = 'checkbox-label';
         allLabel.innerHTML = `
@@ -265,7 +305,6 @@
         hr.className = 'divider';
         container.insertAdjacentElement('afterend', hr);
 
-        // Criar checkboxes para as categorias
         categories.forEach(cat => {
             const label = document.createElement('label');
             label.className = 'checkbox-label';
@@ -277,27 +316,27 @@
             container.appendChild(label);
         });
 
-        // Configurar Event Listeners
         const checkAll = document.getElementById('check-all');
         const catChecks = document.querySelectorAll('.cat-checkbox');
 
-        checkAll.addEventListener('change', function() {
-            catChecks.forEach(cb => cb.checked = this.checked);
-            updateMaxQuestions();
-        });
+        if (checkAll) {
+            checkAll.addEventListener('change', function() {
+                catChecks.forEach(cb => cb.checked = this.checked);
+                updateMaxQuestions();
+            });
+        }
 
         catChecks.forEach(cb => {
             cb.addEventListener('change', function() {
-                if (!this.checked) checkAll.checked = false;
+                if (!this.checked && checkAll) checkAll.checked = false;
                 const allChecked = Array.from(catChecks).every(c => c.checked);
-                if (allChecked) checkAll.checked = true;
+                if (checkAll && allChecked) checkAll.checked = true;
                 updateMaxQuestions();
             });
         });
 
-        // Atualizar limite inicial
         updateMaxQuestions();
-    };
+    }
     
     // ATUALIZA A QUANTIDADE MÁXIMA DE QUESTÕES DISPONÍVEIS
     function updateMaxQuestions() {
@@ -311,19 +350,25 @@
         const numInput = document.getElementById('num-questions');
         const maxLabel = document.getElementById('max-questions-label');
         
-        numInput.max = availableCount;
-        maxLabel.innerText = `(Máximo disponível: ${availableCount})`;
-        
-        // Ajusta o valor atual caso exceda o novo máximo
-        if (parseInt(numInput.value) > availableCount) {
-            numInput.value = availableCount;
+        if (numInput) {
+            numInput.max = availableCount;
+            if (parseInt(numInput.value) > availableCount) {
+                numInput.value = availableCount;
+            }
+            if (availableCount === 0) {
+                numInput.value = 0;
+            } else if (parseInt(numInput.value) === 0) {
+                numInput.value = 1;
+            }
         }
-        if (availableCount === 0) {
-            numInput.value = 0;
-        } else if (parseInt(numInput.value) === 0) {
-            numInput.value = 1;
+
+        if (maxLabel) {
+            maxLabel.innerText = `(Máximo disponível: ${availableCount})`;
         }
     }
+
+    document.addEventListener('DOMContentLoaded', initializeQuizSetup);
+    window.addEventListener('load', initializeQuizSetup);
 
     function removeAccents(str) {
         return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
