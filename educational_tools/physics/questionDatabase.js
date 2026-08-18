@@ -91,6 +91,7 @@ window.questionDatabase = [
     ],
     "validFormulas": [
       "v=v_0+a\\cdot t",
+      "v=v0+a\\cdot t",
       "v=v_0+at",
       "v=v0+at"
     ],
@@ -121,13 +122,15 @@ window.questionDatabase = [
         "synonyms": [
           "deslocamento",
           "distancia",
-          "delta s"
+          "delta s",
+          "espaço"
         ]
       }
     ],
     "validFormulas": [
       "v^2=v_0^2+2a\\Delta s",
       "v^2=v_0^2+2\\cdot a\\cdot\\Delta s",
+      "v^2=v0^2+2\\cdot a\\cdot\\Delta s",
       "v^2=v0^2+2a\\Delta s"
     ],
     "displayFormula": "v^2 = v_0^2 + 2 \\cdot a \\cdot \\Delta s"
@@ -169,7 +172,10 @@ window.questionDatabase = [
     ],
     "validFormulas": [
       "s=s_0+v_0t+\\frac{at^2}{2}",
-      "s=s_0+v_0\\cdot t+\\frac{a\\cdot t^2}{2}"
+      "s=s_0+v_0t+at^2/2",
+      "s=s0+v0t+\\frac{at^2}{2}",
+      "s=s_0+v_0\\cdot t+\\frac{a\\cdot t^2}{2}",
+      "s=s0+v0t+at^2/2"
     ],
     "displayFormula": "s = s_0 + v_0 \\cdot t + \\frac{a \\cdot t^2}{2}"
   },
@@ -842,13 +848,18 @@ window.questionDatabase = [
         "id": "var_3",
         "synonyms": [
           "constante eletrostatica",
+          "constante eletrostatica do meio",
           "k"
         ]
       }
     ],
     "validFormulas": [
       "F_{el}=\\frac{k\\cdot q_1\\cdot q_2}{d^2}",
-      "F=\\frac{kq_1q_2}{d^2}"
+      "F_{el}=\\frac{k\\cdot q1\\cdot q2}{d^2}",
+      "F_{el}=k\\cdot\\frac{q1\\cdot q2}{d^2}",
+      "F_{el}=k\\cdot\\frac{q_1\\cdot q_2}{d^2}",
+      "F=\\frac{kq_1q_2}{d^2}",
+      "F=k\\frac{q_1q_2}{d^2}"
     ],
     "displayFormula": "F_{el} = \\frac{k \\cdot q_1 \\cdot q_2}{d^2}"
   },
@@ -862,6 +873,8 @@ window.questionDatabase = [
         "id": "var_0",
         "synonyms": [
           "carga geradora",
+          "carga",
+          "carga eletrica",
           "q"
         ]
       },
@@ -876,16 +889,110 @@ window.questionDatabase = [
         "id": "var_3",
         "synonyms": [
           "constante eletrostatica",
+          "constante eletrostatica do meio",
           "k"
         ]
       }
     ],
     "validFormulas": [
       "V=\\frac{kq}{d}",
-      "V=\\frac{k\\cdot q}{d}"
+      "V=k\\frac{q}{d}",
+      "V=\\frac{k\\cdot q}{d}",
+      "V=k\\cdot\\frac{q}{d}",
+      "V=\\frac{q\\cdot k}{d}"
     ],
     "displayFormula": "V = \\frac{k \\cdot q}{d}"
   },
+  {
+  "category": "Eletrostática",
+
+  "title": "Energia Potencial Elétrica",
+
+  "context": "Imagine uma região entre duas placas onde existe um campo elétrico uniforme. Ao se deslocar de um ponto para outro nessa região, uma carga pode perceber uma diferença de potencial entre esses pontos.",
+
+  "varsPrompt": "A diferença de potencial elétrico (U) em um campo elétrico uniforme depende de quais grandezas?",
+
+  "vars": [
+
+    {
+      "id": "var_0",
+
+      "synonyms": [
+        "campo eletrico",
+        "intensidade do campo eletrico",
+        "campo",
+        "E"
+      ]
+    },
+
+    {
+      "id": "var_1",
+
+      "synonyms": [
+        "distancia",
+        "distancia entre os pontos",
+        "d"
+      ]
+    }
+
+  ],
+
+  "validFormulas": [
+
+    "U=Ed",
+    "U=E\\cdot d",
+    "U=dE",
+    "U=d\\cdot E"
+
+  ],
+
+  "displayFormula": "U = E \\cdot d"
+},
+{
+  "category": "Eletrostática",
+
+  "title": "Força Elétrica",
+
+  "context": "Imagine uma pequena carga elétrica colocada em uma região onde existe um campo elétrico. Nessa situação, a presença do campo pode fazer com que a carga sofra uma força.",
+
+  "varsPrompt": "A Força Elétrica (F) que atua sobre uma carga em um campo elétrico depende de quais grandezas?",
+
+  "vars": [
+
+    {
+      "id": "var_0",
+
+      "synonyms": [
+        "carga",
+        "carga eletrica",
+        "q"
+      ]
+    },
+
+    {
+      "id": "var_1",
+
+      "synonyms": [
+        "campo eletrico",
+        "intensidade do campo eletrico",
+        "campo",
+        "E"
+      ]
+    }
+
+  ],
+
+  "validFormulas": [
+
+    "F=qE",
+    "F=q\\cdot E",
+    "F=Eq",
+    "F=E\\cdot q"
+
+  ],
+
+  "displayFormula": "F = q \\cdot E"
+},
   {
     "category": "Eletromagnetismo",
     "title": "Força Magnética",
@@ -896,7 +1003,8 @@ window.questionDatabase = [
         "id": "var_0",
         "synonyms": [
           "carga",
-          "q"
+          "q",
+          "carga eletrica"
         ]
       },
       {
@@ -1030,4 +1138,5 @@ window.questionDatabase = [
     ],
     "displayFormula": "\\varepsilon = -\\frac{\\Delta \\phi}{\\Delta t}"
   }
-];
+]
+;
