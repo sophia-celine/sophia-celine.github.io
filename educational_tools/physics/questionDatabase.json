@@ -172,7 +172,10 @@
     ],
     "validFormulas": [
       "s=s_0+v_0t+\\frac{at^2}{2}",
-      "s=s_0+v_0\\cdot t+\\frac{a\\cdot t^2}{2}"
+      "s=s_0+v_0t+at^2/2",
+      "s=s0+v0t+\\frac{at^2}{2}",
+      "s=s_0+v_0\\cdot t+\\frac{a\\cdot t^2}{2}",
+      "s=s0+v0t+at^2/2"
     ],
     "displayFormula": "s = s_0 + v_0 \\cdot t + \\frac{a \\cdot t^2}{2}"
   },
