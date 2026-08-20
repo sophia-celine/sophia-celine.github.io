@@ -178,7 +178,7 @@
             <div class="input-group">
                 <label for="num-questions">Quantas fórmulas deseja revisar agora?</label><br>
                 <small id="max-questions-label" style="color: var(--text-muted);">(Máximo disponível: 0)</small><br><br>
-                <input type="number" id="num-questions" min="1" max="34" value="5">
+                <input type="number" id="num-questions" min="1" max="34" value="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="numeric">
             </div>
             <button onclick="startQuiz()">Começar a Responder</button>
         </div>
@@ -446,6 +446,10 @@
             input.className = 'var-input';
             input.placeholder = `Grandeza ${i + 1}`;
             input.id = `var-input-${i}`;
+            input.autocomplete = 'off';
+            input.autocorrect = 'off';
+            input.autocapitalize = 'off';
+            input.spellcheck = false;
             
             if (savedAnswers[currentIndex] && savedAnswers[currentIndex].vars && savedAnswers[currentIndex].vars[i]) {
                 input.value = savedAnswers[currentIndex].vars[i];
