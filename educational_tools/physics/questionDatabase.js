@@ -662,7 +662,10 @@ window.questionDatabase = [
     "validFormulas": [
       "F_{at}=\\mu\\cdot N",
       "F_{at}=\\mu N",
-      "Fat=\\mu N"
+      "Fat=\\mu N",
+      "F=\\mu\\cdot N",
+      "F=\\mu N",
+      "F=\\mu N"
     ],
     "displayFormula": "F_{at} = \\mu \\cdot N"
   },
