@@ -692,7 +692,11 @@ window.questionDatabase = [
     ],
     "validFormulas": [
       "F_{el}=kx",
-      "F_{el}=k\\cdot x"
+      "F_{el}=k\\cdot x",
+      "Fel = kx",
+      "Fel=k\\cdot x",
+      "F=kx",
+      "F=k\\cdot x"
     ],
     "displayFormula": "F_{el} = k \\cdot x"
   },
