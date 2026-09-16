@@ -494,6 +494,36 @@ window.questionDatabase = [
     "displayFormula": "\\frac{1}{R_{eq}} = \\frac{1}{R_1} + \\frac{1}{R_2} + ..."
   },
   {
+    "category": "Circuitos",
+    "title": "Corrente elétrica",
+    "context": "A corrente elétrica descreve o fluxo de elétrons através de um condutor.",
+    "varsPrompt": "O valor da corrente elétrica em um condutor depende de quais grandezas?",
+    "vars": [
+      {
+        "id": "var_0",
+        "synonyms": [
+          "carga",
+          "q",
+          "delta q",
+          "variacao de carga"
+        ]
+      },
+      {
+        "id": "var_1",
+        "synonyms": [
+          "tempo",
+          "t",
+          "delta t",
+          "variacao de tempo"
+        ]
+      }
+    ],
+    "validFormulas": [
+      "i=\\frac{\\Delta q}{\\Delta t}"
+    ],
+    "displayFormula": "i = \\frac{\Delta q}{\Delta t}"
+  },
+  {
     "category": "Ondulatória",
     "title": "Equação Fundamental da Onda",
     "context": "A velocidade de uma onda em um meio depende de quão rápido ela oscila e do tamanho de cada ciclo.",
