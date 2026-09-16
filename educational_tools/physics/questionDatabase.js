@@ -519,7 +519,8 @@ window.questionDatabase = [
       }
     ],
     "validFormulas": [
-      "i=\\frac{\\Delta q}{\\Delta t}"
+      "i=\\frac{\\Delta q}{\\Delta t}",
+      "i=\\Delta q / \\Delta t"
     ],
     "displayFormula": "i = \\frac{\Delta q}{\Delta t}"
   },
