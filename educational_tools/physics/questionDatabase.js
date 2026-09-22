@@ -760,6 +760,65 @@ window.questionDatabase = [
     "displayFormula": "F_r = m \\cdot a"
   },
   {
+    "category": "Dinâmica / Forças",
+
+    "title": "Força de Empuxo",
+
+    "context": "Quando um corpo é colocado dentro de um fluido, o fluido exerce uma força sobre ele. Essa força está relacionada à quantidade de fluido que ocupa o espaço deslocado pelo corpo.",
+
+    "varsPrompt": "A Força de Empuxo (E) exercida por um fluido sobre um corpo depende de quais grandezas?",
+
+    "vars": [
+
+      {
+        "id": "var_0",
+
+        "synonyms": [
+          "densidade do fluido",
+          "densidade do liquido",
+          "densidade",
+          "rho"
+        ]
+      },
+
+      {
+        "id": "var_1",
+
+        "synonyms": [
+          "volume deslocado",
+          "volume de fluido deslocado",
+          "volume submerso",
+          "volume",
+          "V"
+        ]
+      },
+
+      {
+        "id": "var_2",
+
+        "synonyms": [
+          "aceleracao da gravidade",
+          "gravidade",
+          "aceleracao gravitacional",
+          "g"
+        ]
+      }
+
+    ],
+
+    "validFormulas": [
+
+      "E=\\rho Vg",
+      "E=\\rho\\cdot V\\cdot g",
+      "E=V\\rho g",
+      "E=V\\cdot\\rho\\cdot g",
+      "E=\\rho gV"
+
+    ],
+
+    "displayFormula": "E = \\rho \\cdot V \\cdot g"
+  },
+  {
     "category": "Movimento Circular",
     "title": "Velocidade Linear no MCU",
     "context": "Imagine um disco girando. A velocidade linear de um ponto descreve o quão rápido ele percorre a circunferência da curva.",
@@ -1056,15 +1115,27 @@ window.questionDatabase = [
         "id": "var_2",
         "synonyms": [
           "campo magnetico",
-          "b"
+          "b",
+          "campo"
+        ]
+      },
+      {
+        "id": "var_3",
+        "synonyms": [
+          "angulo",
+          "angulo entre a velocidade e o campo magnetico",
+          "angulo entre a velocidade e o campo",
+          "theta"
         ]
       }
     ],
     "validFormulas": [
-      "F_{mag}=qvB",
-      "F_{mag}=q\\cdot v\\cdot B"
+      "F_{mag}=qvB \\sin\\theta",
+      "F_{mag}=q\\cdot v\\cdot B \\cdot \\sin\\theta",
+      "F=qvB \\sin\\theta",
+      "F=q\\cdot v\\cdot B \\sin\\theta",
     ],
-    "displayFormula": "F_{mag} = q \\cdot v \\cdot B"
+    "displayFormula": "F_{mag} = q \\cdot v \\cdot B \\sin\\theta"
   },
   {
     "category": "Eletromagnetismo",
@@ -1117,7 +1188,10 @@ window.questionDatabase = [
         "id": "var_0",
         "synonyms": [
           "campo magnetico",
-          "b"
+          "b",
+          "campo",
+          "intensidade do campo magnetico",
+          "intensidade do campo"
         ]
       },
       {
@@ -1138,11 +1212,14 @@ window.questionDatabase = [
       }
     ],
     "validFormulas": [
-      "\\phi=B\\cdot A\\cdot\\cos\\alpha",
-      "\\phi=BA\\cos\\alpha",
-      "\\Phi=BA\\cos\\alpha"
+      "\\phi=B\\cdot A\\cdot\\cos\\theta",
+      "\\phi=A\\cdot B\\cdot\\cos\\theta",
+      "\\phi=A\\cdot\\cos\\theta\\cdot B",
+      "\\phi=B\\cdot\\cos\\theta\\cdot A",
+      "\\phi=BA\\cos\\theta",
+      "\\phi=AB\\cos\\theta"
     ],
-    "displayFormula": "\\phi = B \\cdot A \\cdot \\cos\\alpha"
+    "displayFormula": "\\phi = A \\cdot B \\cdot \\cos\\theta"
   },
   {
     "category": "Eletromagnetismo",
