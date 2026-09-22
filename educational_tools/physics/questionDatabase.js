@@ -1252,6 +1252,212 @@ window.questionDatabase = [
       "\\varepsilon=-\\Delta\\phi/\\Delta t"
     ],
     "displayFormula": "\\varepsilon = -\\frac{\\Delta \\phi}{\\Delta t}"
+  },
+  {
+    "category": "Refração da luz",
+
+    "title": "Índice de Refração",
+
+    "context": "A luz se propaga com velocidades diferentes ao atravessar diferentes meios. O índice de refração de meio descreve essa propriedade.",
+
+    "varsPrompt": "O Índice de Refração (n) de um meio depende de quais grandezas?",
+
+    "vars": [
+      {
+        "id": "var_0",
+
+        "synonyms": [
+          "velocidade da luz no vacuo",
+          "velocidade no vacuo",
+          "c"
+        ]
+      },
+      {
+        "id": "var_1",
+
+        "synonyms": [
+          "velocidade da luz no meio",
+          "velocidade no meio",
+          "v"
+        ]
+      }
+    ],
+
+    "validFormulas": [
+      "n=\\frac{c}{v}",
+      "n=c\\frac{1}{v}",
+      "n=\\frac{1}{v}c"
+    ],
+
+    "displayFormula": "n = \\frac{c}{v}"
+  },
+
+  {
+    "category": "Refração da luz",
+
+    "title": "Lei de Snell",
+
+    "context": "Quando um raio de luz passa de um meio para outro, sua direção pode mudar na superfície de separação entre os meios. A Lei de Snell descreve a relação desse desvio de acordo com as propriedades de cada meio.",
+
+    "varsPrompt": "A Lei de Snell relaciona quais grandezas durante a passagem da luz de um meio para outro?",
+
+    "vars": [
+      {
+        "id": "var_0",
+
+        "synonyms": [
+          "indice de refracao do primeiro meio",
+          "indice do meio 1",
+          "n1"
+        ]
+      },
+      {
+        "id": "var_1",
+
+        "synonyms": [
+          "indice de refracao do segundo meio",
+          "indice do meio 2",
+          "n2"
+        ]
+      },
+      {
+        "id": "var_2",
+
+        "synonyms": [
+          "angulo de incidencia",
+          "angulo incidente",
+          "theta 1",
+          "theta1"        
+        ]
+      },
+      {
+        "id": "var_3",
+
+        "synonyms": [
+          "angulo de refracao",
+          "angulo refratado",
+          "theta 2",
+          "theta2",
+        ]
+      }
+    ],
+
+    "validFormulas": [
+      "n_1\\sin\\theta_1=n_2\\sin\\theta_2",
+      "n1\\sin\\theta_1=n2\\sin\\theta_2",
+      "n_1\\cdot\\sin\\theta_1=n_2\\cdot\\sin\\theta_2",
+      "n1*sin(theta1)=n2*sin(theta2)"
+    ],
+
+    "displayFormula": "n_1 \\sin\\theta_1 = n_2 \\sin\\theta_2"
+  },
+
+  {
+    "category": "Refração da luz",
+
+    "title": "Espelhos Esféricos",
+
+    "context": "Um espelho esférico pode formar uma imagem de um objeto. As características da imagem variam de acordo com a posição do objeto e com as características geométricas do espelho.",
+
+    "varsPrompt": "A posição da imagem formada por um espelho esférico está relacionada a quais grandezas?",
+
+    "vars": [
+      {
+        "id": "var_0",
+
+        "synonyms": [
+          "distancia focal",
+          "distancia do foco",
+          "f"
+        ]
+      },
+      {
+        "id": "var_1",
+
+        "synonyms": [
+          "distancia do objeto",
+          "distancia do objeto ao espelho",
+          "posicao do objeto",
+          "p"
+        ]
+      },
+      {
+        "id": "var_2",
+
+        "synonyms": [
+          "distancia da imagem",
+          "distancia da imagem ao espelho",
+          "posicao da imagem",
+          "p'"
+        ]
+      }
+    ],
+
+    "validFormulas": [
+      "\\frac{1}{f}=\\frac{1}{p}+\\frac{1}{p'}",
+      "\\frac{1}{f}=\\frac{1}{p'}+\\frac{1}{p}",
+      "\\frac{1}{p}+\\frac{1}{p'}=\\frac{1}{f}"
+    ],
+
+    "displayFormula": "\\frac{1}{f} = \\frac{1}{p} + \\frac{1}{p'}"
+  },
+  {
+    "category": "Refração da luz",
+
+    "title": "Aumento Linear dos Espelhos Esféricos",
+
+    "context": "Um objeto colocado diante de um espelho esférico pode formar uma imagem maior ou menor que o objeto. A relação entre os tamanhos está ligada às posições do objeto e da imagem em relação ao espelho.",
+
+    "varsPrompt": "A relação entre o tamanho da imagem e o tamanho do objeto está relacionada a quais grandezas?",
+
+    "vars": [
+      {
+        "id": "var_0",
+
+        "synonyms": [
+          "tamanho da imagem",
+          "altura da imagem",
+          "i"
+        ]
+      },
+      {
+        "id": "var_1",
+
+        "synonyms": [
+          "tamanho do objeto",
+          "altura do objeto",
+          "o"
+        ]
+      },
+      {
+        "id": "var_2",
+
+        "synonyms": [
+          "distancia do objeto",
+          "distancia do objeto ao espelho",
+          "p"
+        ]
+      },
+      {
+        "id": "var_3",
+
+        "synonyms": [
+          "distancia da imagem",
+          "distancia da imagem ao espelho",
+          "p'"
+        ]
+      }
+    ],
+
+    "validFormulas": [
+      "\\frac{i}{o}=-\\frac{p'}{p}",
+      "\\frac{i}{o}=-\\frac{p'}{p}",
+      "i\\cdot p=-o\\cdot p'",
+      "\\frac{p'}{p}=-\\frac{i}{o}"
+    ],
+
+    "displayFormula": "\\frac{i}{o} = -\\frac{p'}{p}"
   }
 ]
+
 ;
